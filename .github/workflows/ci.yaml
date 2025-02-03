@@ -1,0 +1,58 @@
+name: "🚀 vgv_challenge CI"
+
+concurrency:
+  group: vgv_challenge
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  semantic-push:
+    name: "📝 Conventional Commit Check"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v5
+
+  spell-check:
+    name: "📝 Spell Check"
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
+    with:
+      includes: "**/*.md"
+      modified_files_only: true
+
+  analyze:
+    name: "🔍 Analyze Code"
+    needs: [spell-check, semantic-push]
+    runs-on: ubuntu-latest
+    steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+      - name: "🔍 Run Analysis"
+        uses: ./.github/actions/analyze
+
+  test:
+    name: "🧪 Run Tests"
+    needs: [spell-check, semantic-push]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      checks: write
+    steps:
+      - name: "📥 Checkout Repository"
+        uses: actions/checkout@v4
+      - name: "🧪 Execute Tests"
+        uses: ./.github/actions/test
+        with:
+          test-locations: "."

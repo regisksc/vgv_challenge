@@ -1,0 +1,38 @@
+name: 🔍 Code Quality Metrics
+description: "📊 Runs Dart Code Metrics analysis across all modules"
+
+runs:
+  using: composite
+  steps:
+    - name: 🛠️ Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: true
+
+    - name: 🧩 Setup Melos
+      uses: bluefireteam/melos-action@v2
+
+    - name: 📦 Install Dependencies
+      shell: bash
+      run: melos bootstrap
+
+    - name: 📏 Run Code Metrics
+      shell: bash
+      run: |
+        mkdir -p metrics/html
+        chmod +x scripts/run-code-metrics.sh
+        ./scripts/run-code-metrics.sh \
+          "lib"
+
+    - name: 📦 Package Reports
+      shell: bash
+      run: |
+        mkdir -p metrics_archive
+        zip -qr "metrics_archive/code-metrics-$(date +%Y%m%d).zip" metrics
+
+    - name: 📤 Upload Metrics Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-metrics
+        path: metrics_archive/*.zip

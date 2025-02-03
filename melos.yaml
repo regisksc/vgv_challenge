@@ -1,0 +1,76 @@
+name: vgv_challenge_mock
+repository: https://github.com/regisksc/vgv_challenge_mock
+
+packages:
+  - "."               # Root directory as main package
+  - "packages/**"     # All sub-packages
+
+scripts:
+  # Install Dependencies
+  build:get:
+    run: flutter pub get
+    exec:
+      concurrency: 6
+
+  build:clean:get:
+    run: |
+      flutter clean
+      flutter pub get
+    exec:
+      concurrency: 6
+    description: Clean Flutter package and install dependencies
+
+  build:clean:all: melos run --no-select build:clean:get
+
+  ###################################
+
+  # Code Quality Checks
+  quality:analyze:
+    exec: |
+      flutter analyze --no-fatal-infos --no-fatal-warnings .
+      flutter pub run dart_code_metrics:metrics analyze --no-fatal-style --exclude "{**.g.dart,**.gen.dart,**.freezed.dart}" .
+      flutter pub run dart_code_metrics:metrics --reporter=html --disable-sunset-warning --fatal-performance .
+      dart format .
+    select-package:
+      dir-exists:
+        - lib
+
+  quality:analyze:all: melos run --no-select quality:analyze
+
+  ###################################
+
+  # Tests
+  test:
+    run: flutter test --coverage --reporter compact
+    exec:
+      concurrency: 6
+    select-package:
+      dir-exists:
+        - test
+
+  test:update-goldens:
+    run: flutter test --update-goldens
+    exec:
+      concurrency: 6
+    select-package:
+      dir-exists:
+        - test
+      scope:
+        - "data"
+        - "vgv_challenge_mock"  # Root package name from pubspec.yaml
+
+  test:all: melos run test --no-select
+  test:update-goldens:all: melos run test:update-goldens --no-select
+
+  ###################################
+    
+  # Run App
+  run:dev-app:
+    exec: flutter run -t 'lib/main_development.dart' --flavor dev
+    select-package:
+      scope: "vgv_challenge_mock"  # Matches root package name
+
+  run:prod-app:
+    exec: flutter run -t 'lib/main_production.dart' --flavor prod
+    select-package:
+      scope: "vgv_challenge_mock"

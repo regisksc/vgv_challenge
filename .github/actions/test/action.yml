@@ -1,0 +1,49 @@
+name: 🧪 Run Tests & Coverage
+description: "✅ Runs test suites for the app and data, and uploads reports."
+
+inputs:
+  test-locations:
+    description: "List of test locations"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🛠️ Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: true
+
+    - name: 🔬 Run Tests
+      shell: bash
+      run: |
+        chmod +x scripts/run-tests.sh
+        ./scripts/run-tests.sh ${{ inputs.test-locations }}
+
+    - name: 📦 Create Final Zip
+      shell: bash
+      run: zip -qr coverage-reports.zip coverage-reports/
+
+    - name: 📤 Upload Coverage
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-reports
+        path: coverage-reports.zip
+
+    - name: 🚦 Verify Coverage
+      uses: VeryGoodOpenSource/very_good_coverage@v2
+      with:
+        path: coverage-reports/merged.lcov.info
+        min_coverage: 80
+        exclude: "**/*.*.dart"
+
+    - name: 📊 Report Tests
+      uses: dorny/test-reporter@v1.6.0
+      with:
+        name: test-results
+        path: "**/test-results.json"
+        reporter: flutter-json

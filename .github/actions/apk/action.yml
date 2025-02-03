@@ -1,0 +1,99 @@
+name: 📱 Build & Upload APK
+description: "🔨 Builds the Flutter APK & uploads it for release."
+
+inputs:
+  build-type:
+    description: "Build type (debug or release)"
+    required: false
+    default: "release"
+  
+  build-target:
+    description: "Build target (flavored main.dart file)"
+    required: false
+    default: "lib/main_production.dart"
+
+  build-flavor:
+    description: "Build flavor (production, staging or development)"
+    required: false
+    default: "production"
+
+  keystore-path:
+    description: "Path to keystore file"
+    required: false
+    default: "android/app/prod-release.jks"
+
+  keystore-base64:
+    description: "Base64 encoded keystore"
+    required: true
+
+  keystore-password:
+    description: "Keystore password"
+    required: true
+
+  key-alias:
+    description: "Key alias"
+    required: true
+
+  key-password:
+    description: "Key password"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v4
+
+    - name: 🛠️ Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        cache: true
+
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: "temurin"
+        java-version: "17"
+
+    - name: 🔑 Setup Keystore
+      shell: bash
+      run: |
+        mkdir -p android/app
+        
+        # Decode base64 keystore
+        echo "${{ inputs.keystore-base64 }}" | base64 -d > "${{ inputs.keystore-path }}"
+        
+        # Verify keystore contents
+        echo "Verifying keystore access..."
+        keytool -list -v \
+          -keystore "${{ inputs.keystore-path }}" \
+          -storepass "${{ inputs.keystore-password }}" \
+          -alias "${{ inputs.key-alias }}"
+        
+        echo "Keystore setup complete"
+        ls -la "${{ inputs.keystore-path }}"
+
+    - name: 📦 Install Dependencies
+      shell: bash
+      run: flutter pub get
+
+    - name: 🔨 Build APK
+      shell: bash
+      env:
+        ANDROID_KEYSTORE_PATH: ${{ github.workspace }}/${{ inputs.keystore-path }}
+        ANDROID_KEYSTORE_PASSWORD: ${{ inputs.keystore-password }}
+        ANDROID_KEYSTORE_ALIAS: ${{ inputs.key-alias }}
+        ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ inputs.key-password }}
+      run: |
+        chmod +x scripts/run-apk-build.sh
+        ./scripts/run-apk-build.sh \
+          "${{ inputs.build-type }}" \
+          "${{ inputs.build-target }}" \
+          "${{ inputs.build-flavor }}"
+
+    - name: 📤 Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: apk-build
+        path: apk/*.apk
