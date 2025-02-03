@@ -14,7 +14,6 @@ void main() {
   late MockHttpClient mockHttpClient;
 
   // ignore: unnecessary_lambdas
-
   TestWidgetsFlutterBinding.ensureInitialized();
   const MethodChannel('plugins.flutter.io/path_provider')
       // ignore: deprecated_member_use
