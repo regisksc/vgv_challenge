@@ -33,6 +33,18 @@ class ItemNeverStoredFailure extends ReadingFailure {
   ItemNeverStoredFailure({super.key});
 }
 
+class ReadingOrWritingFailure extends StorageFailure {
+  ReadingOrWritingFailure({
+    required String key,
+  }) : super(message: 'Storage: Could not operate on key $key');
+
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool? get stringify => false;
+}
+
 class WritingFailure extends StorageFailure {
   WritingFailure({
     required String key,
