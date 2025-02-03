@@ -10,13 +10,6 @@ runs:
         channel: stable
         cache: true
 
-    - name: 🧩 Setup Melos
-      uses: bluefireteam/melos-action@v2
-
-    - name: 📦 Install Dependencies
-      shell: bash
-      run: melos bootstrap
-
     - name: 📏 Run Code Metrics
       shell: bash
       run: |
