@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
 class FavoritesScreenCallToActionWidget extends StatelessWidget {
@@ -9,7 +10,9 @@ class FavoritesScreenCallToActionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, AppRoutes.favorites),
+      onTap: () => context.read<MainScreenBloc>().add(
+            TapFavoritesCallToAction(),
+          ),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(

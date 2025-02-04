@@ -19,7 +19,18 @@ class _MainScreenState extends State<MainScreen> {
         localFetchCoffee: sl.get<FetchCoffeeFromHistory>(),
         saveCoffeeToHistory: sl.get<SaveCoffeeToHistory>(),
       )..add(FetchRandomCoffee()),
-      child: const MainScreenContentWidget(),
+      child: BlocListener<MainScreenBloc, MainScreenState>(
+        listener: (context, state) {
+          if (state is IsNavigating) {
+            Navigator.pushNamed(
+              context,
+              state.destination,
+              arguments: state.coffee,
+            );
+          }
+        },
+        child: const MainScreenContentWidget(),
+      ),
     );
   }
 }

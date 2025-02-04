@@ -31,9 +31,18 @@ class CoffeeImageHeaderWidget extends StatelessWidget {
                   offset: Offset(0, -50 * animationValue),
                   child: Transform.scale(
                     scale: 1 - (0.5 * animationValue),
-                    child: Image.file(
-                      state.coffee.asFile,
-                      fit: BoxFit.cover,
+                    child: Stack(
+                      children: [
+                        Image.file(
+                          state.coffee.asFile,
+                          fit: BoxFit.cover,
+                        ),
+                        GestureDetector(
+                          onTap: () => context.read<MainScreenBloc>().add(
+                                TapCoffee(coffee: state.coffee),
+                              ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

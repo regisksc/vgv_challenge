@@ -126,4 +126,38 @@ void main() {
       MainScreenLoaded(coffee: dummyCoffee),
     ],
   );
+
+  blocTest<MainScreenBloc, MainScreenState>(
+    'TapCoffee emits IsNavigating with details destination',
+    build: () {
+      // Arrange
+      final bloc = MainScreenBloc(
+        historyListBloc: mockHistoryListBloc,
+        apiFetchCoffee: mockApiFetchCoffee,
+        localFetchCoffee: mockLocalFetchCoffee,
+        saveCoffeeToHistory: mockSaveCoffeeToHistory,
+      )..emit(MainScreenLoaded(coffee: dummyCoffee));
+      return bloc;
+    },
+    act: (bloc) => bloc.add(const TapCoffee()),
+    expect: () => <Matcher>[
+      predicate<IsNavigating>(
+        (state) => state.destination == AppRoutes.details && state.coffee == dummyCoffee,
+        'IsNavigating with destination details and correct coffee',
+      ),
+    ],
+  );
+
+  blocTest<MainScreenBloc, MainScreenState>(
+    'TapFavoritesCallToAction emits IsNavigating with favorites destination',
+    build: () => bloc,
+    act: (bloc) => bloc.add(TapFavoritesCallToAction()),
+    expect: () => <Matcher>[
+      predicate<IsNavigating>(
+        // ignore: lines_longer_than_80_chars
+        (state) => state.destination == AppRoutes.favorites && state.coffee == null,
+        'IsNavigating with destination favorites and no coffee',
+      ),
+    ],
+  );
 }
