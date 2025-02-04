@@ -13,7 +13,7 @@ class HiveStorage implements Storage {
       final value = box.get(key);
       return value;
     } catch (error) {
-      throw ReadingFailure(key: key);
+      throw ReadingFailure(key: key, );
     }
   }
 

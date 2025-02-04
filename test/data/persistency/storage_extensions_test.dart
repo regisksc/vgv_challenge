@@ -12,15 +12,15 @@ void main() {
   });
 
   // ignore: lines_longer_than_80_chars
-  test('getCoffeeList throws ReadingFromEmptyFailure when read returns null', () async {
+  test('getCoffeeList returns null when not found', () async {
     // Arrange
     const testKey = 'testKey';
     when(() => mockStorage.read(key: testKey)).thenAnswer((_) async => null);
 
+    // Act
+    final result = await mockStorage.getCoffeeList(testKey);
+
     // Act & Assert
-    expect(
-      () => mockStorage.getCoffeeList(testKey),
-      throwsA(isA<ReadingFromEmptyFailure>()),
-    );
+    expect(result, isNull);
   });
 }

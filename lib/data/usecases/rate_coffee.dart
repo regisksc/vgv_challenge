@@ -14,6 +14,7 @@ class RateCoffee extends UpdateCoffee with CoffeeUpdateHelper {
 
     final coffeeId = params.coffee.id;
     final newRating = params.newRating!;
-    return update(coffeeId, newRating);
+    final result = await update(coffeeId, newRating);
+    return result;
   }
 }

@@ -5,7 +5,8 @@ import 'package:vgv_challenge/data/data.dart';
 extension StorageExtensions on Storage {
   Future<List<CoffeeModel>?> getCoffeeList(String key) async {
     final storedJson = await read(key: key);
-    if (storedJson == null) return null;
+    final isEmpty = storedJson == '[]' || storedJson == '';
+    if (storedJson == null || isEmpty) return null;
     final decoded = jsonDecode(storedJson) as List<dynamic>;
     return decoded
         .map(
