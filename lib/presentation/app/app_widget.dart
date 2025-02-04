@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vgv_challenge/presentation/app/app.dart';
+import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/l10n/l10n.dart';
+import 'package:vgv_challenge/presentation/presentation.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
@@ -49,7 +50,17 @@ class AppWidget extends StatelessWidget {
       onGenerateRoute: AppRoutes.onGenerateRoute,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const Scaffold(),
+      home: Scaffold(
+        body: Center(
+          child: CoffeeCard(
+            coffee: Coffee(
+              id: '',
+              imagePath: '',
+              seenAt: DateTime.now(),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
