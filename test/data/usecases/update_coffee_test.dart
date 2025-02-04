@@ -241,6 +241,7 @@ void main() {
   });
 
   group('CommentCoffee', () {
+    // ignore: lines_longer_than_80_chars
     test('returns Result.failure(UnexpectedInputFailure()) when params is null', () async {
       // Act
       final result = await rateCoffee.call();
