@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vgv_challenge/presentation/app/app.dart';
 import 'package:vgv_challenge/presentation/l10n/l10n.dart';
 
 class AppWidget extends StatelessWidget {
@@ -45,6 +46,7 @@ class AppWidget extends StatelessWidget {
           hintStyle: TextStyle(color: Colors.brown[900]),
         ),
       ),
+      onGenerateRoute: AppRoutes.onGenerateRoute,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: const Scaffold(),
