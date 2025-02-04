@@ -51,7 +51,9 @@ class DioHttpClient implements HttpClient {
   Exception _mapException(DioException e) {
     return switch (e.type) {
       // ignore: lines_longer_than_80_chars
-      DioExceptionType.connectionTimeout || DioExceptionType.receiveTimeout => TimeoutException(e.message),
+      DioExceptionType.connectionTimeout ||
+      DioExceptionType.receiveTimeout =>
+        TimeoutException(e.message),
       DioExceptionType.badResponse => switch (e.response?.statusCode) {
           400 => BadRequestFailure(),
           401 || 403 => UnauthorizedFailure(),

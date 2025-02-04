@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 
-
 class FetchCoffeeFromHistory implements GetCoffee {
   FetchCoffeeFromHistory({required this.storage});
 

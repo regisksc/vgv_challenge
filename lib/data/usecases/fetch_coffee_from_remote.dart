@@ -10,7 +10,8 @@ class FetchCoffeeFromRemote implements GetCoffee {
   FetchCoffeeFromRemote({required this.httpClient});
   final HttpClient httpClient;
 
-  static const String _remoteUrl = 'https://coffee.alexflipnote.dev/random.json';
+  static const String _remoteUrl =
+      'https://coffee.alexflipnote.dev/random.json';
 
   @override
   Future<Result<Coffee, Failure>> call([void _]) async {

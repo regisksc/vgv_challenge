@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:vgv_challenge/domain/domain.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/presentation/l10n/l10n.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
@@ -50,16 +51,11 @@ class AppWidget extends StatelessWidget {
       onGenerateRoute: AppRoutes.onGenerateRoute,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        body: Center(
-          child: CoffeeCard(
-            coffee: Coffee(
-              id: '',
-              imagePath: '',
-              seenAt: DateTime.now(),
-            ),
-          ),
+      home: BlocProvider(
+        create: (context) => HistoryListBloc(
+          getHistoryList: sl.get<GetCoffeeHistoryList>(),
         ),
+        child: const MainScreen(),
       ),
     );
   }
