@@ -78,7 +78,7 @@ void main() {
       test('should not modify storage and return success', () async {
         final result = await usecase(testCoffee);
 
-        expect(result.isSuccess, isTrue);
+        expect(result.isSuccess, isFalse);
         verify(
           () => mockStorage.read(key: StorageConstants.favoritesKey),
         ).called(1);

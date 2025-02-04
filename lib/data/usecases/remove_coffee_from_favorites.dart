@@ -15,6 +15,7 @@ class RemoveCoffeeFromFavorites extends Unfavorite {
       final favoriteList = await storage.getCoffeeList(
         StorageConstants.favoritesKey,
       );
+      if (favoriteList == null || favoriteList.isEmpty) throw ReadingFailure();
       final initialLength = favoriteList.length;
       favoriteList.removeWhere((element) => element.id == params.id);
       if (favoriteList.length < initialLength) {
