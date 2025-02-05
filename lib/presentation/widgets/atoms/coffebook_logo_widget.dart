@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vgv_challenge/presentation/presentation.dart';
 
 class CoffeeBookLogoWidget extends StatelessWidget {
   const CoffeeBookLogoWidget({super.key});
@@ -9,7 +10,7 @@ class CoffeeBookLogoWidget extends StatelessWidget {
       width: 120,
       height: 30,
       decoration: BoxDecoration(
-        color: const Color(0xFF1877F2),
+        color: facebookColor,
         borderRadius: BorderRadius.circular(8),
       ),
       alignment: Alignment.center,

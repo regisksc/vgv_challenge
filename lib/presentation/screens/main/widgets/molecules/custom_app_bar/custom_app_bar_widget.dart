@@ -67,7 +67,11 @@ class CustomAppBarWidget extends StatelessWidget {
               rightChild: IconButton.outlined(
                 color: Colors.brown[700],
                 onPressed: () => _onNewCoffee(context),
-                icon: const Icon(Icons.coffee_outlined, size: 20),
+                icon: const Icon(
+                  Icons.coffee_outlined,
+                  size: 20,
+                  color: facebookColor,
+                ),
               ),
             ),
             background: Stack(
