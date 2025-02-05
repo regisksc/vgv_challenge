@@ -10,6 +10,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
+      
       providers: [
         BlocProvider(
           create: (_) => CoffeeCardListBloc(
@@ -17,6 +18,7 @@ class MainScreen extends StatelessWidget {
           )..add(LoadCoffeeCardList()),
         ),
         BlocProvider(
+          
           create: (context) => MainScreenBloc(
             historyListBloc: context.read<CoffeeCardListBloc>(),
             apiFetchCoffee: sl.get<FetchCoffeeFromRemote>(),
@@ -24,6 +26,7 @@ class MainScreen extends StatelessWidget {
             saveCoffeeToHistory: sl.get<SaveCoffeeToHistory>(),
           )..add(FetchRandomCoffee()),
         ),
+        
       ],
       child: BlocListener<MainScreenBloc, MainScreenState>(
         listener: (context, state) {
@@ -34,6 +37,7 @@ class MainScreen extends StatelessWidget {
               arguments: (
                 coffee: state.coffee,
                 historyBloc: context.read<CoffeeCardListBloc>(),
+                favoritesBloc: context.read<CoffeeCardListBloc>(),
               ),
             );
           }

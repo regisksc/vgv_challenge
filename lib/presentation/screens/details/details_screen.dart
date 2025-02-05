@@ -8,10 +8,12 @@ class DetailsScreen extends StatefulWidget {
   const DetailsScreen({
     required this.coffee,
     required this.historyListBloc,
+    required this.favoritesListBloc,
     super.key,
   });
   final Coffee coffee;
   final CoffeeCardListBloc historyListBloc;
+  final CoffeeCardListBloc favoritesListBloc;
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
@@ -28,6 +30,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       commentCoffee: sl.get<CommentCoffee>(),
       initialCoffee: widget.coffee,
       historyListBloc: widget.historyListBloc,
+      favoritesListBloc: widget.favoritesListBloc,
     );
   }
 

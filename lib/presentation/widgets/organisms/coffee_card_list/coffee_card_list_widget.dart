@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
 class CoffeeCardListWidget extends StatelessWidget {
   const CoffeeCardListWidget({required this.title, super.key});
-
   final String title;
 
   @override
@@ -13,28 +13,78 @@ class CoffeeCardListWidget extends StatelessWidget {
     return BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
       builder: (context, state) {
         if (state is CoffeeCardListLoading) {
-          return const CoffeeCardListLoadingWidget();
+          return const _CoffeeCardListLoadingWidget();
         } else if (state is CoffeeCardListLoaded) {
-          return CoffeeCardListSliverWidget(coffees: state.list);
+          return _ListLoadedContainerWidget(state);
+        } else if (state is CoffeeCardListFailedLoading) {
+          return _ListFailedLoadingContainerWidget(state.failure);
         } else {
-          return const SliverToBoxAdapter(
-            child: Scaffold(
-              body: ColoredBox(
-                color: Colors.white70,
-                child: Center(child: Text('Oops... Something went wrong.')),
-              ),
-            ),
-          );
+          return const SizedBox.shrink();
         }
       },
     );
   }
 }
 
-class CoffeeCardListLoadingWidget extends StatelessWidget {
-  const CoffeeCardListLoadingWidget({
-    super.key,
-  });
+class _ListFailedLoadingContainerWidget extends StatelessWidget {
+  const _ListFailedLoadingContainerWidget(this.failure);
+  final Failure failure;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final appBarHeight = AppBar().preferredSize.height;
+    return SliverToBoxAdapter(
+      child: Container(
+        height: size.height - appBarHeight,
+        width: size.width,
+        color: Colors.brown[200],
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              () {
+                // ignore: lines_longer_than_80_chars
+                const noItemsMessage = 'No favorites yet. Tap on a card and then a star and it will appear here.';
+                const unexpectedMessage = 'Oops... Something went wrong.';
+                if (failure is ReadingFromEmptyFailure) return noItemsMessage;
+                return unexpectedMessage;
+              }(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.brown[500],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ListLoadedContainerWidget extends StatelessWidget {
+  const _ListLoadedContainerWidget(this.state);
+  final CoffeeCardListLoaded state;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.list.isEmpty) {
+      return const SliverToBoxAdapter(
+        child: ColoredBox(
+          color: Colors.white70,
+          child: Center(
+            child: Text('No favorite coffees found.'),
+          ),
+        ),
+      );
+    }
+    return CoffeeCardListSliverWidget(coffees: state.list);
+  }
+}
+
+class _CoffeeCardListLoadingWidget extends StatelessWidget {
+  const _CoffeeCardListLoadingWidget();
 
   @override
   Widget build(BuildContext context) {

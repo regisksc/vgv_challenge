@@ -10,6 +10,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
     required this.commentCoffee,
     required this.initialCoffee,
     required this.historyListBloc,
+    required this.favoritesListBloc,
   }) : super(DetailsInitial()) {
     on<CommentChanged>(_onCommentChanged);
     on<SubmitComment>(_onSubmitComment);
@@ -21,6 +22,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   String _lastComment = '';
 
   final CoffeeCardListBloc historyListBloc;
+  final CoffeeCardListBloc favoritesListBloc;
 
   void _onCommentChanged(
     CommentChanged event,
@@ -47,6 +49,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
       (coffee) {
         emit(CommentSubmissionSuccess());
         historyListBloc.add(LoadCoffeeCardList());
+        favoritesListBloc.add(LoadCoffeeCardList());
       },
       (failure) => emit(CommentSubmissionFailure(failure: failure)),
     );

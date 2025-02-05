@@ -18,6 +18,7 @@ class AppRoutes {
         final args = settings.arguments as ({
           Coffee coffee,
           CoffeeCardListBloc historyBloc,
+          CoffeeCardListBloc favoritesBloc,
         })?;
 
         return MaterialPageRoute(
@@ -26,18 +27,21 @@ class AppRoutes {
             return DetailsScreen(
               coffee: args.coffee,
               historyListBloc: args.historyBloc,
+              favoritesListBloc: args.favoritesBloc,
             );
           }(),
         );
       case favorites:
-        return MaterialPageRoute(builder: (context) {
-          return BlocProvider(
-            create: (_) => CoffeeCardListBloc(
-              getList: sl.get<GetCoffeeList>(instanceName: 'favorites'),
-            )..add(LoadCoffeeCardList()),
-            child: const FavoritesScreen(),
-          );
-        });
+        return MaterialPageRoute(
+          builder: (context) {
+            return BlocProvider(
+              create: (_) => CoffeeCardListBloc(
+                getList: sl.get<GetCoffeeList>(instanceName: 'favorites'),
+              )..add(LoadCoffeeCardList()),
+              child: const FavoritesScreen(),
+            );
+          },
+        );
       default:
         const message = 'Route Not Found';
         return MaterialPageRoute(
