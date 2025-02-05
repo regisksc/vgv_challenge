@@ -14,6 +14,7 @@ class DetailsScreen extends StatefulWidget {
   final Coffee coffee;
   final CoffeeCardListBloc historyListBloc;
   final CoffeeCardListBloc favoritesListBloc;
+
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
@@ -22,16 +23,22 @@ class _DetailsScreenState extends State<DetailsScreen> {
   late final TextEditingController _controller;
   late final DetailsBloc _bloc;
 
+  bool _isFavorite = false;
+
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.coffee.comment ?? '');
     _bloc = DetailsBloc(
       commentCoffee: sl.get<CommentCoffee>(),
+      rateCoffee: sl.get<RateCoffee>(),
+      favoriteCoffee: sl.get<SaveCoffeeToFavorites>(),
+      unfavoriteCoffee: sl.get<RemoveCoffeeFromFavorites>(),
       initialCoffee: widget.coffee,
       historyListBloc: widget.historyListBloc,
       favoritesListBloc: widget.favoritesListBloc,
     );
+    _isFavorite = widget.coffee.isFavorite;
   }
 
   @override
@@ -59,27 +66,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: _toggleFavorite,
               icon: Icon(
                 Icons.star,
-                // ignore: lines_longer_than_80_chars
-                color: widget.coffee.isFavorite ? Colors.brown[100] : Colors.brown[650],
+                color: _isFavorite ? Colors.amber : Colors.grey,
               ),
             ),
           ],
         ),
         body: BlocListener<DetailsBloc, DetailsState>(
           listener: (context, state) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(() {
-                  final isCurrent = ModalRoute.of(context)?.isCurrent;
-                  final successState = state is CommentSubmissionSuccess;
-                  final saved = successState && (isCurrent ?? false);
-                  return saved ? 'Comment saved' : 'Oops! Something wrong';
-                }()),
-              ),
-            );
+            if (state is CommentSubmissionSuccess || state is RatingSubmissionSuccess) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Success!')),
+              );
+            } else if (state is CommentSubmissionFailure || state is RatingSubmissionFailure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed: ${_getFailureMessage(state)}')),
+              );
+            }
           },
           child: SingleChildScrollView(
             child: Padding(
@@ -122,5 +127,26 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
       ),
     );
+  }
+
+  void _toggleFavorite() {
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+
+    if (_isFavorite) {
+      _bloc.add(FavoritedCoffee());
+    } else {
+      _bloc.add(UnfavoritedCoffee());
+    }
+  }
+
+  String _getFailureMessage(DetailsState state) {
+    if (state is CommentSubmissionFailure) {
+      return 'Comment saving failed.';
+    } else if (state is RatingSubmissionFailure) {
+      return 'Rating saving failed.';
+    }
+    return 'Unknown error';
   }
 }

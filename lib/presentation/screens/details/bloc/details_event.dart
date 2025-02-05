@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:vgv_challenge/domain/domain.dart';
 
 abstract class DetailsEvent extends Equatable {
   const DetailsEvent();
@@ -13,4 +14,14 @@ class CommentChanged extends DetailsEvent {
   List<Object?> get props => [comment];
 }
 
+class FavoritedCoffee extends DetailsEvent {}
+
+class UnfavoritedCoffee extends DetailsEvent {}
+
 class SubmitComment extends DetailsEvent {}
+
+class SubmitRating extends DetailsEvent {
+  const SubmitRating({required this.rating});
+
+  final CoffeeRating rating;
+}

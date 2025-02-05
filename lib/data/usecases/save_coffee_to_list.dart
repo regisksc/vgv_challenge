@@ -17,13 +17,14 @@ abstract class SaveCoffeeToList extends SaveCoffee {
   @override
   Future<Result<void, Failure>> call([Coffee? params]) async {
     try {
+      if (params == null) return Result.failure(UnexpectedInputFailure());
       final currentValue = await storage.read(key: key);
 
       List<Map<String, dynamic>> coffeesList;
       final isExistingList = currentValue != null;
       coffeesList = isExistingList ? _decodeExistingList(currentValue) : [];
 
-      var model = CoffeeModel.fromEntity(params!);
+      var model = CoffeeModel.fromEntity(params);
 
       if (key == StorageConstants.favoritesKey && model.isFavorite == false) {
         model = model.copyWith(isFavorite: true);

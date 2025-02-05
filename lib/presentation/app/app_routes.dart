@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
@@ -13,7 +14,7 @@ class AppRoutes {
   ) {
     switch (settings.name) {
       case main:
-        return MaterialPageRoute(builder: (_) =>  MainScreen());
+        return MaterialPageRoute(builder: (_) => MainScreen());
       case details:
         final args = settings.arguments as ({
           Coffee coffee,
@@ -36,7 +37,9 @@ class AppRoutes {
           builder: (context) {
             return BlocProvider(
               create: (_) => CoffeeCardListBloc(
-                getList: sl.get<GetCoffeeList>(instanceName: 'favorites'),
+                getList: sl.get<GetFavoriteCoffeeList>(
+                  instanceName: 'favorites',
+                ),
               )..add(LoadCoffeeCardList()),
               child: const FavoritesScreen(),
             );

@@ -37,6 +37,9 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<SaveCoffeeToHistory>(
       SaveCoffeeToHistory(storage: sl<Storage>()),
     )
+    ..registerSingleton<RemoveCoffeeFromFavorites>(
+      RemoveCoffeeFromFavorites(storage: sl<Storage>()),
+    )
     ..registerSingleton<RateCoffee>(
       RateCoffee(storage: sl<Storage>()),
     )
