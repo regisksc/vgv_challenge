@@ -13,7 +13,7 @@ class AppRoutes {
   ) {
     switch (settings.name) {
       case main:
-        return MaterialPageRoute(builder: (_) => const MainScreen());
+        return MaterialPageRoute(builder: (_) =>  MainScreen());
       case details:
         final args = settings.arguments as ({
           Coffee coffee,

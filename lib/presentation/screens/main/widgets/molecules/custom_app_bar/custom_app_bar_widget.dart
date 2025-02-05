@@ -34,11 +34,11 @@ class CustomAppBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final maxHeight = screenHeight * 0.8;
+    final maxHeight = _getMaxHeight(screenHeight);
     final minHeight = max(screenHeight * 0.08, kToolbarHeight + 10);
 
     return SliverAppBar(
-      expandedHeight: screenHeight,
+      expandedHeight: maxHeight,
       collapsedHeight: minHeight,
       stretch: true,
       pinned: true,
@@ -104,5 +104,22 @@ class CustomAppBarWidget extends StatelessWidget {
         },
       ),
     );
+  }
+
+  double _getMaxHeight(double screenHeight) {
+    const smallScreenHeightThreshold = 700.0;
+    const largeScreenHeightThreshold = 1000.0;
+    const smallScreenHeightFactor = 0.85;
+    const largeScreenHeightFactor = 0.6;
+    const defaultHeightFactor = 0.7;
+
+    final small = screenHeight * smallScreenHeightFactor;
+    final large = screenHeight * largeScreenHeightFactor;
+
+    return switch (screenHeight) {
+      _ when screenHeight < smallScreenHeightThreshold => small,
+      _ when screenHeight > largeScreenHeightThreshold => large,
+      _ => screenHeight * defaultHeightFactor,
+    };
   }
 }
