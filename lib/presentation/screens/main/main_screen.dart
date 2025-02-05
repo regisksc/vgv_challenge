@@ -4,13 +4,15 @@ import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
+// ignore: must_be_immutable
 class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
+  MainScreen({super.key});
+
+  MainScreenLoaded? _cachedState;
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      
       providers: [
         BlocProvider(
           create: (_) => CoffeeCardListBloc(
@@ -18,7 +20,6 @@ class MainScreen extends StatelessWidget {
           )..add(LoadCoffeeCardList()),
         ),
         BlocProvider(
-          
           create: (context) => MainScreenBloc(
             historyListBloc: context.read<CoffeeCardListBloc>(),
             apiFetchCoffee: sl.get<FetchCoffeeFromRemote>(),
@@ -26,10 +27,10 @@ class MainScreen extends StatelessWidget {
             saveCoffeeToHistory: sl.get<SaveCoffeeToHistory>(),
           )..add(FetchRandomCoffee()),
         ),
-        
       ],
       child: BlocListener<MainScreenBloc, MainScreenState>(
         listener: (context, state) {
+          if (state is MainScreenLoaded) _cachedState = state;
           if (state is IsNavigating) {
             Navigator.pushNamed(
               context,
@@ -39,7 +40,13 @@ class MainScreen extends StatelessWidget {
                 historyBloc: context.read<CoffeeCardListBloc>(),
                 favoritesBloc: context.read<CoffeeCardListBloc>(),
               ),
-            );
+            ).then((_) {
+              if (context.mounted) {
+                final bloc = context.read<MainScreenBloc>();
+                if (_cachedState == null) bloc.add(FetchRandomCoffee());
+                bloc.add(ReloadLoadedImage(coffee: _cachedState!.coffee));
+              }
+            });
           }
         },
         child: const MainScreenContentWidget(),

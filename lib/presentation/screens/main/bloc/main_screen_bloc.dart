@@ -25,6 +25,9 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
     on<TapFavoritesCallToAction>((event, emit) {
       emit(const IsNavigating(destination: AppRoutes.favorites, coffee: null));
     });
+    on<ReloadLoadedImage>((event, emit) {
+      emit(MainScreenLoaded(coffee: event.coffee));
+    });
   }
 
   final CoffeeCardListBloc historyListBloc;
