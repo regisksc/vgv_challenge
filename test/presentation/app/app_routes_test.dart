@@ -12,6 +12,8 @@ import 'package:vgv_challenge/presentation/presentation.dart';
 
 class GetHistoryListMock extends Mock implements GetCoffeeList {}
 
+class GetFavoritesListMock extends Mock implements GetCoffeeList {}
+
 class FetchCoffeeFromRemoteMock extends Mock implements FetchCoffeeFromRemote {}
 
 class FetchCoffeeFromHistoryMock extends Mock implements FetchCoffeeFromHistory {}
@@ -34,8 +36,8 @@ Future<void> pumpRoute(WidgetTester tester, {required RouteSettings settings}) a
   await tester.pumpWidget(
     MultiBlocProvider(
       providers: [
-        BlocProvider<HistoryListBloc>(
-          create: (context) => sl.get<HistoryListBloc>(),
+        BlocProvider<CoffeeCardListBloc>(
+          create: (context) => sl.get<CoffeeCardListBloc>(),
         ),
         BlocProvider<MainScreenBloc>(
           create: (context) => sl.get<MainScreenBloc>(),
@@ -44,10 +46,11 @@ Future<void> pumpRoute(WidgetTester tester, {required RouteSettings settings}) a
       child: MaterialApp(home: Builder(builder: pageRoute.builder)),
     ),
   );
-  await tester.pump(const Duration(seconds: 1));
+  await tester.pumpAndSettle(const Duration(seconds: 1));
 }
 
 void main() {
+  late GetCoffeeList getFavoritesListMock;
   late GetCoffeeList getHistoryListMock;
   late FetchCoffeeFromRemote fetchCoffeeFromRemoteMock;
   late FetchCoffeeFromHistory fetchCoffeeFromHistoryMock;
@@ -58,6 +61,7 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     await sl.reset();
 
+    getFavoritesListMock = GetFavoritesListMock();
     getHistoryListMock = GetHistoryListMock();
     fetchCoffeeFromRemoteMock = FetchCoffeeFromRemoteMock();
     fetchCoffeeFromHistoryMock = FetchCoffeeFromHistoryMock();
@@ -69,18 +73,19 @@ void main() {
 
     sl
       ..registerSingleton<Box<String>>(box)
-      ..registerSingleton<GetCoffeeList>(getHistoryListMock)
+      ..registerSingleton<GetCoffeeList>(getFavoritesListMock, instanceName: 'favorites')
+      ..registerSingleton<GetCoffeeList>(getHistoryListMock, instanceName: 'history')
       ..registerSingleton<FetchCoffeeFromRemote>(fetchCoffeeFromRemoteMock)
       ..registerSingleton<FetchCoffeeFromHistory>(fetchCoffeeFromHistoryMock)
       ..registerSingleton<SaveCoffeeToHistory>(saveCoffeeToHistoryMock)
       ..registerSingleton<CommentCoffee>(commentCoffeeMock)
-      ..registerSingleton(HistoryListBloc(getHistoryList: getHistoryListMock))
+      ..registerSingleton(CoffeeCardListBloc(getList: getHistoryListMock))
       ..registerSingleton(
         MainScreenBloc(
           apiFetchCoffee: fetchCoffeeFromRemoteMock,
           localFetchCoffee: fetchCoffeeFromHistoryMock,
           saveCoffeeToHistory: saveCoffeeToHistoryMock,
-          historyListBloc: sl.get<HistoryListBloc>(),
+          historyListBloc: sl.get<CoffeeCardListBloc>(),
         ),
       );
 
@@ -111,7 +116,7 @@ void main() {
     });
 
     testWidgets('renders DetailsScreen with valid arguments', (tester) async {
-      final historyBloc = sl.get<HistoryListBloc>();
+      final historyBloc = sl.get<CoffeeCardListBloc>();
       await pumpRoute(
         tester,
         settings: RouteSettings(

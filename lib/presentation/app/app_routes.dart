@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
@@ -16,7 +17,7 @@ class AppRoutes {
       case details:
         final args = settings.arguments as ({
           Coffee coffee,
-          HistoryListBloc historyBloc,
+          CoffeeCardListBloc historyBloc,
         })?;
 
         return MaterialPageRoute(
@@ -29,12 +30,18 @@ class AppRoutes {
           }(),
         );
       case favorites:
-        return MaterialPageRoute(builder: (_) => const FavoritesScreen());
+        return MaterialPageRoute(builder: (context) {
+          return BlocProvider(
+            create: (_) => CoffeeCardListBloc(
+              getList: sl.get<GetCoffeeList>(instanceName: 'favorites'),
+            )..add(LoadCoffeeCardList()),
+            child: const FavoritesScreen(),
+          );
+        });
       default:
+        const message = 'Route Not Found';
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text('Route Not Found')),
-          ),
+          builder: (_) => const Scaffold(body: Center(child: Text(message))),
         );
     }
   }

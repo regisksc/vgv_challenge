@@ -20,7 +20,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   Timer? _debounce;
   String _lastComment = '';
 
-  final HistoryListBloc historyListBloc;
+  final CoffeeCardListBloc historyListBloc;
 
   void _onCommentChanged(
     CommentChanged event,
@@ -46,7 +46,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
     result.when(
       (coffee) {
         emit(CommentSubmissionSuccess());
-        historyListBloc.add(LoadHistory());
+        historyListBloc.add(LoadCoffeeCardList());
       },
       (failure) => emit(CommentSubmissionFailure(failure: failure)),
     );

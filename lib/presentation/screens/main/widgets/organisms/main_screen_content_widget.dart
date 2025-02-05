@@ -38,9 +38,9 @@ class _MainScreenContentWidgetState extends State<MainScreenContentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String getHistoryListTitle() {
-      final s = context.read<HistoryListBloc>().state;
-      if (s is! HistoryListLoaded || s.list.length <= 1) {
+    String getCoffeeCardListTitle() {
+      final s = context.read<CoffeeCardListBloc>().state;
+      if (s is! CoffeeCardListLoaded || s.list.length <= 1) {
         return '';
       }
       return 'Last seen';
@@ -60,10 +60,11 @@ class _MainScreenContentWidgetState extends State<MainScreenContentWidget> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: BlocBuilder<HistoryListBloc, HistoryListState>(
+                      // ignore: lines_longer_than_80_chars
+                      child: BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
                         builder: (context, state) {
                           return Text(
-                            getHistoryListTitle(),
+                            getCoffeeCardListTitle(),
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -73,7 +74,7 @@ class _MainScreenContentWidgetState extends State<MainScreenContentWidget> {
                       ),
                     ),
                   ),
-                  const HistoryListWidget(),
+                  const CoffeeCardListWidget(title: 'Last seen'),
                   const SliverToBoxAdapter(child: SizedBox(height: 80)),
                 ],
               ),

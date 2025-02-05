@@ -27,7 +27,7 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
     });
   }
 
-  final HistoryListBloc historyListBloc;
+  final CoffeeCardListBloc historyListBloc;
   final GetCoffee apiFetchCoffee;
   final GetCoffee localFetchCoffee;
   final SaveCoffee saveCoffeeToHistory;
@@ -36,19 +36,15 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
     FetchRandomCoffee event,
     Emitter<MainScreenState> emit,
   ) async {
-    if (state is HistoryListLoading) return;
+    if (state is CoffeeCardListLoading) return;
     emit(MainScreenLoading());
     final apiFetchResult = await apiFetchCoffee();
     await apiFetchResult.when(
       (coffee) async {
         final saveResult = await saveCoffeeToHistory(coffee);
         saveResult.when(
-          (success) {
-            historyListBloc.add(LoadHistory());
-          },
-          (failure) {
-            emit(MainScreenFailure(failure));
-          },
+          (success) => historyListBloc.add(LoadCoffeeCardList()),
+          (failure) => emit(MainScreenFailure(failure)),
         );
         emit(MainScreenLoaded(coffee: coffee));
       },

@@ -11,7 +11,7 @@ class DetailsScreen extends StatefulWidget {
     super.key,
   });
   final Coffee coffee;
-  final HistoryListBloc historyListBloc;
+  final CoffeeCardListBloc historyListBloc;
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
@@ -45,7 +45,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<DetailsBloc>.value(value: _bloc),
-        BlocProvider<HistoryListBloc>.value(value: widget.historyListBloc),
+        BlocProvider<CoffeeCardListBloc>.value(value: widget.historyListBloc),
       ],
       child: Scaffold(
         appBar: AppBar(
@@ -59,6 +59,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               onPressed: () {},
               icon: Icon(
                 Icons.star,
+                // ignore: lines_longer_than_80_chars
                 color: widget.coffee.isFavorite ? Colors.brown[100] : Colors.brown[650],
               ),
             ),

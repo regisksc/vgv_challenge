@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vgv_challenge/data/data.dart';
+import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
 
-class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => MainScreenBloc(
-        historyListBloc: context.read<HistoryListBloc>(),
-        apiFetchCoffee: sl.get<FetchCoffeeFromRemote>(),
-        localFetchCoffee: sl.get<FetchCoffeeFromHistory>(),
-        saveCoffeeToHistory: sl.get<SaveCoffeeToHistory>(),
-      )..add(FetchRandomCoffee()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => CoffeeCardListBloc(
+            getList: sl.get<GetCoffeeList>(instanceName: 'history'),
+          )..add(LoadCoffeeCardList()),
+        ),
+        BlocProvider(
+          create: (context) => MainScreenBloc(
+            historyListBloc: context.read<CoffeeCardListBloc>(),
+            apiFetchCoffee: sl.get<FetchCoffeeFromRemote>(),
+            localFetchCoffee: sl.get<FetchCoffeeFromHistory>(),
+            saveCoffeeToHistory: sl.get<SaveCoffeeToHistory>(),
+          )..add(FetchRandomCoffee()),
+        ),
+      ],
       child: BlocListener<MainScreenBloc, MainScreenState>(
         listener: (context, state) {
           if (state is IsNavigating) {
@@ -27,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
               state.destination,
               arguments: (
                 coffee: state.coffee,
-                historyBloc: context.read<HistoryListBloc>(),
+                historyBloc: context.read<CoffeeCardListBloc>(),
               ),
             );
           }

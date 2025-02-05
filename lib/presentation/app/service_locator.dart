@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:vgv_challenge/data/data.dart';
+import 'package:vgv_challenge/domain/domain.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -22,11 +23,13 @@ Future<void> setupServiceLocator() async {
     ..registerSingleton<FetchCoffeeFromHistory>(
       FetchCoffeeFromHistory(storage: sl<Storage>()),
     )
-    ..registerSingleton<GetCoffeeHistoryList>(
+    ..registerSingleton<GetCoffeeList>(
       GetCoffeeHistoryList(storage: sl<Storage>()),
+      instanceName: 'history',
     )
-    ..registerSingleton<GetFavoriteCoffeeList>(
+    ..registerSingleton<GetCoffeeList>(
       GetFavoriteCoffeeList(storage: sl<Storage>()),
+      instanceName: 'favorites',
     )
     ..registerSingleton<SaveCoffeeToFavorites>(
       SaveCoffeeToFavorites(storage: sl<Storage>()),

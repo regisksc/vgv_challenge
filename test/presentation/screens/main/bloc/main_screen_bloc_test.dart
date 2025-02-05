@@ -9,7 +9,7 @@ class MockGetCoffee extends Mock implements GetCoffee {}
 
 class MockSaveCoffee extends Mock implements SaveCoffee {}
 
-class MockHistoryListBloc extends Mock implements HistoryListBloc {}
+class MockHistoryListBloc extends Mock implements CoffeeCardListBloc {}
 
 void main() {
   late MockHistoryListBloc mockHistoryListBloc;
@@ -20,7 +20,7 @@ void main() {
   late Coffee dummyCoffee;
 
   setUpAll(() {
-    registerFallbackValue(LoadHistory());
+    registerFallbackValue(LoadCoffeeCardList());
   });
 
   setUp(() {
@@ -66,7 +66,7 @@ void main() {
       verify(() => mockApiFetchCoffee()).called(1);
       verify(() => mockSaveCoffeeToHistory(dummyCoffee)).called(1);
       verify(
-        () => mockHistoryListBloc.add(any(that: isA<LoadHistory>())),
+        () => mockHistoryListBloc.add(any(that: isA<LoadCoffeeCardList>())),
       ).called(1);
     },
   );
@@ -142,6 +142,7 @@ void main() {
     act: (bloc) => bloc.add(const TapCoffee()),
     expect: () => <Matcher>[
       predicate<IsNavigating>(
+        // ignore: lines_longer_than_80_chars
         (state) => state.destination == AppRoutes.details && state.coffee == dummyCoffee,
         'IsNavigating with destination details and correct coffee',
       ),

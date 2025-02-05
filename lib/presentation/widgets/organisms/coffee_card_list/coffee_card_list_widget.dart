@@ -3,21 +3,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
-class HistoryListWidget extends StatelessWidget {
-  const HistoryListWidget({super.key});
+class CoffeeCardListWidget extends StatelessWidget {
+  const CoffeeCardListWidget({required this.title, super.key});
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HistoryListBloc, HistoryListState>(
+    return BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
       builder: (context, state) {
-        if (state is HistoryListLoading) {
-          return const HistoryListLoadingWidget();
-        } else if (state is HistoryListLoaded) {
-          return HistoryListSliverWidget(coffees: state.list);
+        if (state is CoffeeCardListLoading) {
+          return const CoffeeCardListLoadingWidget();
+        } else if (state is CoffeeCardListLoaded) {
+          return CoffeeCardListSliverWidget(coffees: state.list);
         } else {
           return const SliverToBoxAdapter(
-            child: SizedBox(
-              child: Text('Oops... Something went wrong when trying that.'),
+            child: Scaffold(
+              body: ColoredBox(
+                color: Colors.white70,
+                child: Center(child: Text('Oops... Something went wrong.')),
+              ),
             ),
           );
         }
@@ -26,8 +31,8 @@ class HistoryListWidget extends StatelessWidget {
   }
 }
 
-class HistoryListLoadingWidget extends StatelessWidget {
-  const HistoryListLoadingWidget({
+class CoffeeCardListLoadingWidget extends StatelessWidget {
+  const CoffeeCardListLoadingWidget({
     super.key,
   });
 
@@ -45,8 +50,8 @@ class HistoryListLoadingWidget extends StatelessWidget {
   }
 }
 
-class HistoryListSliverWidget extends StatelessWidget {
-  const HistoryListSliverWidget({required this.coffees, super.key});
+class CoffeeCardListSliverWidget extends StatelessWidget {
+  const CoffeeCardListSliverWidget({required this.coffees, super.key});
 
   final List<Coffee> coffees;
 

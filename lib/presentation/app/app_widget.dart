@@ -52,8 +52,8 @@ class AppWidget extends StatelessWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: BlocProvider(
-        create: (context) => HistoryListBloc(
-          getHistoryList: sl.get<GetCoffeeHistoryList>(),
+        create: (context) => CoffeeCardListBloc(
+          getList: sl.get<GetCoffeeHistoryList>(),
         ),
         child: const MainScreen(),
       ),
