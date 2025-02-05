@@ -14,11 +14,18 @@ class AppRoutes {
       case main:
         return MaterialPageRoute(builder: (_) => const MainScreen());
       case details:
-        final coffee = settings.arguments as Coffee?;
+        final args = settings.arguments as ({
+          Coffee coffee,
+          HistoryListBloc historyBloc,
+        })?;
+
         return MaterialPageRoute(
-          builder: (_) => () {
-            if (coffee == null) return const Scaffold();
-            return DetailsScreen(coffee: coffee);
+          builder: (context) => () {
+            if (args == null) return const Scaffold();
+            return DetailsScreen(
+              coffee: args.coffee,
+              historyListBloc: args.historyBloc,
+            );
           }(),
         );
       case favorites:

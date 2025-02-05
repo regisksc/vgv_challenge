@@ -1,5 +1,3 @@
-// File: test/data/http/dio_http_client_test.dart
-
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'dart:async';

@@ -8,17 +8,23 @@ class CoffeeCard extends StatelessWidget {
     required this.coffee,
     super.key,
     this.enableTimeAgoTimer = true,
+    this.shouldNavigate = true,
+    this.shouldShowRating,
   });
   final Coffee coffee;
   final bool enableTimeAgoTimer;
+  final bool shouldNavigate;
+  final bool? shouldShowRating;
 
   @override
   Widget build(BuildContext context) {
     const height = 400.0;
     return GestureDetector(
-      onTap: () => context.read<MainScreenBloc>().add(
-            TapCoffee(coffee: coffee),
-          ),
+      onTap: shouldNavigate
+          ? () => context.read<MainScreenBloc>().add(
+                TapCoffee(coffee: coffee),
+              )
+          : null,
       child: Card(
         elevation: 8,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -43,7 +49,11 @@ class CoffeeCard extends StatelessWidget {
             Positioned(
               right: 16,
               top: 20,
-              child: CoffeeRatingWidget(coffee: coffee),
+              child: Visibility(
+                visible:
+                    shouldShowRating ?? coffee.rating != CoffeeRating.unrated,
+                child: CoffeeRatingWidget(coffee: coffee),
+              ),
             ),
             Positioned(
               bottom: 0,

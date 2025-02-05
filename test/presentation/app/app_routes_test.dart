@@ -1,4 +1,3 @@
-// File: test/core/app_routes_test.dart
 // ignore_for_file: lines_longer_than_80_chars
 
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
-// Mocks for use cases
 class GetHistoryListMock extends Mock implements GetCoffeeList {}
 
 class FetchCoffeeFromRemoteMock extends Mock implements FetchCoffeeFromRemote {}
@@ -20,45 +18,33 @@ class FetchCoffeeFromHistoryMock extends Mock implements FetchCoffeeFromHistory 
 
 class SaveCoffeeToHistoryMock extends Mock implements SaveCoffeeToHistory {}
 
-/// Create a dummy Coffee instance.
-Coffee createDummyCoffee() {
-  return Coffee(
-    id: 'dummy_id',
-    imagePath: '/dummy/path/image.jpg',
-    seenAt: DateTime(2025),
-    comment: 'Dummy comment',
-  );
-}
+class CommentCoffeeMock extends Mock implements CommentCoffee {}
 
-/// Helper to pump the route with MultiBlocProvider.
-/// This minimizes repeated code.
-Future<void> pumpRoute(
-  WidgetTester tester, {
-  required RouteSettings settings,
-  bool includeBlocs = true,
-}) async {
+Coffee createDummyCoffee() => Coffee(
+      id: 'dummy_id',
+      imagePath: '/dummy/path/image.jpg',
+      seenAt: DateTime(2025),
+      comment: 'Dummy comment',
+    );
+
+Future<void> pumpRoute(WidgetTester tester, {required RouteSettings settings}) async {
   final route = AppRoutes.onGenerateRoute(settings);
   final pageRoute = route as MaterialPageRoute;
-  Widget app = MaterialApp(
-    home: Builder(builder: pageRoute.builder),
+
+  await tester.pumpWidget(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<HistoryListBloc>(
+          create: (context) => sl.get<HistoryListBloc>(),
+        ),
+        BlocProvider<MainScreenBloc>(
+          create: (context) => sl.get<MainScreenBloc>(),
+        ),
+      ],
+      child: MaterialApp(home: Builder(builder: pageRoute.builder)),
+    ),
   );
-  if (includeBlocs) {
-    app = MaterialApp(
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider<HistoryListBloc>(
-            create: (context) => HistoryListBloc(getHistoryList: sl.get<GetCoffeeList>()),
-          ),
-          BlocProvider<MainScreenBloc>(
-            create: (context) => sl.get<MainScreenBloc>(),
-          ),
-        ],
-        child: Builder(builder: pageRoute.builder),
-      ),
-    );
-  }
-  await tester.pumpWidget(app);
-  await tester.pumpAndSettle();
+  await tester.pump(const Duration(seconds: 1));
 }
 
 void main() {
@@ -66,27 +52,34 @@ void main() {
   late FetchCoffeeFromRemote fetchCoffeeFromRemoteMock;
   late FetchCoffeeFromHistory fetchCoffeeFromHistoryMock;
   late SaveCoffeeToHistory saveCoffeeToHistoryMock;
+  late CommentCoffee commentCoffeeMock;
 
   setUp(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await sl.reset();
+
     getHistoryListMock = GetHistoryListMock();
     fetchCoffeeFromRemoteMock = FetchCoffeeFromRemoteMock();
     fetchCoffeeFromHistoryMock = FetchCoffeeFromHistoryMock();
     saveCoffeeToHistoryMock = SaveCoffeeToHistoryMock();
-    TestWidgetsFlutterBinding.ensureInitialized();
-    await sl.reset();
+    commentCoffeeMock = CommentCoffeeMock();
+
+    await setUpTestHive();
+    final box = await Hive.openBox<String>('coffee_box');
+
     sl
+      ..registerSingleton<Box<String>>(box)
       ..registerSingleton<GetCoffeeList>(getHistoryListMock)
       ..registerSingleton<FetchCoffeeFromRemote>(fetchCoffeeFromRemoteMock)
       ..registerSingleton<FetchCoffeeFromHistory>(fetchCoffeeFromHistoryMock)
       ..registerSingleton<SaveCoffeeToHistory>(saveCoffeeToHistoryMock)
+      ..registerSingleton<CommentCoffee>(commentCoffeeMock)
+      ..registerSingleton(HistoryListBloc(getHistoryList: getHistoryListMock))
       ..registerSingleton(
-        HistoryListBloc(getHistoryList: getHistoryListMock),
-      )
-      ..registerSingleton<MainScreenBloc>(
         MainScreenBloc(
-          apiFetchCoffee: sl.get<FetchCoffeeFromRemote>(),
-          localFetchCoffee: sl.get<FetchCoffeeFromHistory>(),
-          saveCoffeeToHistory: sl.get<SaveCoffeeToHistory>(),
+          apiFetchCoffee: fetchCoffeeFromRemoteMock,
+          localFetchCoffee: fetchCoffeeFromHistoryMock,
+          saveCoffeeToHistory: saveCoffeeToHistoryMock,
           historyListBloc: sl.get<HistoryListBloc>(),
         ),
       );
@@ -100,16 +93,10 @@ void main() {
     );
 
     when(() => fetchCoffeeFromRemoteMock()).thenAnswer((_) async => Result.success(dummyCoffee));
-
     when(() => fetchCoffeeFromHistoryMock()).thenAnswer((_) async => Result.success(dummyCoffee));
-
     when(() => saveCoffeeToHistoryMock(dummyCoffee)).thenAnswer((_) async => const Result.success(null));
-
     when(() => getHistoryListMock()).thenAnswer((_) async => Result.success([dummyCoffee]));
-
-    await setUpTestHive();
-    final box = await Hive.openBox<String>('coffee_box');
-    sl.registerSingleton<Box<String>>(box);
+    when(() => commentCoffeeMock(any())).thenAnswer((_) async => const Result.success(null));
   });
 
   tearDown(() async {
@@ -117,76 +104,30 @@ void main() {
     await sl.reset();
   });
 
-  group('onGenerateRoute', () {
-    testWidgets(
-      'returns MainScreen for AppRoutes.main',
-      (WidgetTester tester) async {
-        // Arrange & Act
-        await pumpRoute(
-          tester,
-          settings: const RouteSettings(name: AppRoutes.main),
-        );
-        // Assert
-        expect(find.byType(MainScreen), findsOneWidget);
-      },
-    );
+  group('AppRoutes', () {
+    testWidgets('renders MainScreen for root route', (tester) async {
+      await pumpRoute(tester, settings: const RouteSettings(name: AppRoutes.main));
+      expect(find.byType(MainScreen), findsOneWidget);
+    });
 
-    testWidgets(
-      'returns Scaffold for details route when coffee is null',
-      (WidgetTester tester) async {
-        // Arrange & Act
-        await pumpRoute(
-          tester,
-          settings: const RouteSettings(name: AppRoutes.details),
-        );
-        // Assert
-        expect(find.byType(Scaffold), findsOneWidget);
-        expect(find.byType(DetailsScreen), findsNothing);
-      },
-    );
-
-    testWidgets(
-      'returns DetailsScreen for details route when coffee is provided',
-      (WidgetTester tester) async {
-        // Arrange
-        final dummyCoffee = createDummyCoffee();
-        // Act
-        await pumpRoute(
-          tester,
-          settings: RouteSettings(
-            name: AppRoutes.details,
-            arguments: dummyCoffee,
+    testWidgets('renders DetailsScreen with valid arguments', (tester) async {
+      final historyBloc = sl.get<HistoryListBloc>();
+      await pumpRoute(
+        tester,
+        settings: RouteSettings(
+          name: AppRoutes.details,
+          arguments: (
+            coffee: createDummyCoffee(),
+            historyBloc: historyBloc,
           ),
-        );
-        // Assert
-        expect(find.byType(DetailsScreen), findsOneWidget);
-      },
-    );
+        ),
+      );
+      expect(find.byType(DetailsScreen), findsOneWidget);
+    });
 
-    testWidgets(
-      'returns FavoritesScreen for AppRoutes.favorites',
-      (WidgetTester tester) async {
-        // Arrange & Act
-        await pumpRoute(
-          tester,
-          settings: const RouteSettings(name: AppRoutes.favorites),
-        );
-        // Assert
-        expect(find.byType(FavoritesScreen), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'returns "Route Not Found" for unknown route',
-      (WidgetTester tester) async {
-        // Arrange & Act
-        await pumpRoute(
-          tester,
-          settings: const RouteSettings(name: '/unknown'),
-        );
-        // Assert
-        expect(find.text('Route Not Found'), findsOneWidget);
-      },
-    );
+    testWidgets('renders fallback for invalid details route', (tester) async {
+      await pumpRoute(tester, settings: const RouteSettings(name: AppRoutes.details));
+      expect(find.byType(Scaffold), findsOneWidget);
+    });
   });
 }

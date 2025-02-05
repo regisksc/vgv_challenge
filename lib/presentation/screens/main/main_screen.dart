@@ -25,7 +25,10 @@ class _MainScreenState extends State<MainScreen> {
             Navigator.pushNamed(
               context,
               state.destination,
-              arguments: state.coffee,
+              arguments: (
+                coffee: state.coffee,
+                historyBloc: context.read<HistoryListBloc>(),
+              ),
             );
           }
         },
