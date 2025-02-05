@@ -61,7 +61,8 @@ class _MainScreenContentWidgetState extends State<MainScreenContentWidget> {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       // ignore: lines_longer_than_80_chars
-                      child: BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
+                      child:
+                          BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
                         builder: (context, state) {
                           return Text(
                             getCoffeeCardListTitle(),

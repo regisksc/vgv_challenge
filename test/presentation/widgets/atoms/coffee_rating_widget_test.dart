@@ -1,13 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
+import '../../../helpers/mocks.dart';
+
 void main() {
+  late UpdateCoffee commentCoffeeMock;
+  late UpdateCoffee rateCoffeeMock;
+
+  setUp(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await sl.reset();
+
+    commentCoffeeMock = CommentCoffeeMock();
+    rateCoffeeMock = RateCoffeeMock();
+  });
+
+  Future<void> pumpWidget(WidgetTester tester, {required Widget widget}) async {
+    sl
+      ..registerSingleton<UpdateCoffee>(
+        commentCoffeeMock,
+        instanceName: 'commentCoffee',
+      )
+      ..registerSingleton<UpdateCoffee>(
+        rateCoffeeMock,
+        instanceName: 'rateCoffee',
+      );
+
+    await tester.pumpWidget(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<CoffeeInteractionBloc>(
+            create: (context) => CoffeeInteractionBloc(
+              commentCoffee: sl.get(instanceName: 'commentCoffee'),
+              rateCoffee: sl.get(instanceName: 'rateCoffee'),
+            ),
+          ),
+        ],
+        child: MaterialApp(home: widget),
+      ),
+    );
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+  }
+
   testWidgets(
     'CoffeeRatingWidget displays 5 stars',
     (WidgetTester tester) async {
-      // Arrange: Create a coffee with a specific rating.
+      // Arrange
       final coffee = Coffee(
         id: 'r1',
         imagePath: '/dummy/path',
@@ -15,20 +57,21 @@ void main() {
         rating: CoffeeRating.threeStars,
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
+      await pumpWidget(
+        tester,
+        widget: MaterialApp(
           home: Scaffold(
             body: CoffeeRatingWidget(coffee: coffee),
           ),
         ),
       );
 
-      // Act: Use a predicate to find only the outer icons (size 25).
+      // Act
       final outerIcons = find.byWidgetPredicate((widget) {
         return widget is Icon && widget.size == 25;
       });
 
-      // Assert: Expect exactly 5 icons of the outer type.
+      // Assert
       expect(outerIcons, findsNWidgets(5));
     },
   );
@@ -36,7 +79,7 @@ void main() {
   testWidgets(
     'CoffeeRatingWidget star tap prints debug message',
     (WidgetTester tester) async {
-      // Arrange: Create a coffee with two stars.
+      // Arrange
       final coffee = Coffee(
         id: 'r2',
         imagePath: '/dummy/path',
@@ -44,20 +87,30 @@ void main() {
         rating: CoffeeRating.twoStars,
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
+      when(() => rateCoffeeMock.call(any())).thenAnswer(
+        (_) => Future.value(
+          const Result.success(null),
+        ),
+      );
+
+      await pumpWidget(
+        tester,
+        widget: MaterialApp(
           home: Scaffold(
             body: CoffeeRatingWidget(coffee: coffee, canTap: true),
           ),
         ),
       );
 
-      // Act: Tap on the first star.
-      await tester.tap(find.byWidgetPredicate((widget) {
-        return widget is Icon && widget.size == 25;
-      }).first,);
+      // Act
+      await tester.tap(
+        find.byWidgetPredicate((widget) {
+          return widget is Icon && widget.size == 22;
+        }).first,
+      );
       await tester.pump();
-      // Assert: No errors should be thrown.
+
+      // Assert
     },
   );
 }

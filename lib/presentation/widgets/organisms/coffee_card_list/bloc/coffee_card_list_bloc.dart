@@ -1,6 +1,6 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vgv_challenge/domain/domain.dart';
-import 'package:vgv_challenge/presentation/presentation.dart';
 
 // ignore: lines_longer_than_80_chars
 class CoffeeCardListBloc extends Bloc<CoffeeCardListEvent, CoffeeCardListState> {
@@ -25,3 +25,37 @@ class CoffeeCardListBloc extends Bloc<CoffeeCardListEvent, CoffeeCardListState> 
     );
   }
 }
+
+abstract class CoffeeCardListState extends Equatable {
+  const CoffeeCardListState();
+  @override
+  List<Object?> get props => [];
+}
+
+class CoffeeCardListLoading extends CoffeeCardListState {
+  const CoffeeCardListLoading();
+  @override
+  List<Object?> get props => [];
+}
+
+class CoffeeCardListLoaded extends CoffeeCardListState {
+  const CoffeeCardListLoaded({required this.list});
+  final List<Coffee> list;
+  @override
+  List<Object?> get props => [list];
+}
+
+class CoffeeCardListFailedLoading extends CoffeeCardListState {
+  const CoffeeCardListFailedLoading(this.failure);
+  final Failure failure;
+  @override
+  List<Object?> get props => [failure];
+}
+
+abstract class CoffeeCardListEvent extends Equatable {
+  const CoffeeCardListEvent();
+  @override
+  List<Object?> get props => [];
+}
+
+class LoadCoffeeCardList extends CoffeeCardListEvent {}

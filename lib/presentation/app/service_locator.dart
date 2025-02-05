@@ -31,19 +31,23 @@ Future<void> setupServiceLocator() async {
       GetFavoriteCoffeeList(storage: sl<Storage>()),
       instanceName: 'favorites',
     )
-    ..registerSingleton<SaveCoffeeToFavorites>(
+    ..registerSingleton<SaveCoffee>(
       SaveCoffeeToFavorites(storage: sl<Storage>()),
+      instanceName: 'saveFavorite',
     )
-    ..registerSingleton<SaveCoffeeToHistory>(
+    ..registerSingleton<SaveCoffee>(
       SaveCoffeeToHistory(storage: sl<Storage>()),
+      instanceName: 'saveHistory',
     )
-    ..registerSingleton<RemoveCoffeeFromFavorites>(
+    ..registerSingleton<Unfavorite>(
       RemoveCoffeeFromFavorites(storage: sl<Storage>()),
     )
-    ..registerSingleton<RateCoffee>(
+    ..registerSingleton<UpdateCoffee>(
       RateCoffee(storage: sl<Storage>()),
+      instanceName: 'commentCoffee',
     )
-    ..registerSingleton<CommentCoffee>(
+    ..registerSingleton<UpdateCoffee>(
       CommentCoffee(storage: sl<Storage>()),
+      instanceName: 'rateCoffee',
     );
 }

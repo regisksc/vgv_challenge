@@ -45,7 +45,9 @@ class _ListFailedLoadingContainerWidget extends StatelessWidget {
             child: Text(
               () {
                 // ignore: lines_longer_than_80_chars
-                const noItemsMessage = 'No favorites yet. Tap on a card and then a star and it will appear here.';
+                const noItemsMessage =
+                    // ignore: lines_longer_than_80_chars
+                    'No favorites yet. Tap on a card and then a star and it will appear here.';
                 const unexpectedMessage = 'Oops... Something went wrong.';
                 if (failure is ReadingFromEmptyFailure) return noItemsMessage;
                 return unexpectedMessage;
@@ -74,7 +76,7 @@ class _ListLoadedContainerWidget extends StatelessWidget {
         child: ColoredBox(
           color: Colors.white70,
           child: Center(
-            child: Text('No favorite coffees found.'),
+            child: Text('No coffees found.'),
           ),
         ),
       );
@@ -107,16 +109,18 @@ class CoffeeCardListSliverWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isHistory = coffees.length == StorageConstants.historyLimit;
+    final indexOffset = isHistory ? 1 : 0;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          final coffee = coffees[index + 1];
+          final coffee = coffees[index + indexOffset];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: CoffeeCard(coffee: coffee),
           );
         },
-        childCount: coffees.length - 1,
+        childCount: coffees.length - indexOffset,
       ),
     );
   }
