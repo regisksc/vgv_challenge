@@ -14,11 +14,12 @@ class FavoritesScreen extends StatelessWidget {
       )..add(LoadCoffeeCardList()),
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.brown[200],
           appBar: AppBar(
             title: const Text('Favorite coffees'),
           ),
           body: const CustomScrollView(
-            slivers: [CoffeeCardListWidget(title: '')],
+            slivers: [CoffeeCardListWidget(isHistory: false)],
           ),
         ),
       ),

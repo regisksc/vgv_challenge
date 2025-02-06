@@ -36,14 +36,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String getCoffeeCardListTitle() {
-      final s = context.read<CoffeeCardListBloc>().state;
-      if (s is! CoffeeCardListLoaded || s.list.length <= 1) {
-        return '';
-      }
-      return 'Last seen';
-    }
-
     const favoriteCTAButton = FavoritesScreenCallToActionWidget();
     return SafeArea(
       child: Scaffold(
@@ -61,9 +53,9 @@ class _MainScreenState extends State<MainScreen> {
                       // ignore: lines_longer_than_80_chars
                       child: BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
                         builder: (context, state) {
-                          return Text(
-                            getCoffeeCardListTitle(),
-                            style: const TextStyle(
+                          return const Text(
+                            'Last seen',
+                            style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
@@ -73,7 +65,6 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                   CoffeeCardListWidget(
-                    title: 'Last seen',
                     onReturning: () {
                       context.read<CoffeeCardListBloc>().add(
                             LoadCoffeeCardList(),

@@ -63,7 +63,7 @@ class AppWidget extends StatelessWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         home: MultiBlocProvider(
           providers: [
-            BlocProvider(
+            BlocProvider<CoffeeCardListBloc>(
               create: (_) => CoffeeCardListBloc(
                 getList: sl.get<GetCoffeeList>(instanceName: 'history'),
               )..add(LoadCoffeeCardList()),

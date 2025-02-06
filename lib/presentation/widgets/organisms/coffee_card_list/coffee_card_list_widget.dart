@@ -6,12 +6,12 @@ import 'package:vgv_challenge/presentation/presentation.dart';
 
 class CoffeeCardListWidget extends StatelessWidget {
   const CoffeeCardListWidget({
-    required this.title,
     this.onReturning,
+    this.isHistory = true,
     super.key,
   });
-  final String title;
   final Function? onReturning;
+  final bool isHistory;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,13 @@ class CoffeeCardListWidget extends StatelessWidget {
         if (state is CoffeeCardListLoading) {
           return const _CoffeeCardListLoadingWidget();
         } else if (state is CoffeeCardListLoaded) {
-          return _ListLoadedContainerWidget(state, onReturning);
+          return state.list.isNotEmpty
+              ? _ListLoadedContainerWidget(
+                  state,
+                  onReturning,
+                  isHistory: isHistory,
+                )
+              : _ListFailedLoadingContainerWidget(ReadingFromEmptyFailure());
         } else if (state is CoffeeCardListFailedLoading) {
           return _ListFailedLoadingContainerWidget(state.failure);
         } else {
@@ -40,30 +46,44 @@ class _ListFailedLoadingContainerWidget extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final appBarHeight = AppBar().preferredSize.height;
     return SliverToBoxAdapter(
-      child: Container(
+      child: SizedBox(
         height: size.height - appBarHeight,
         width: size.width,
-        color: Colors.brown[200],
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              () {
-                // ignore: lines_longer_than_80_chars
-                const noItemsMessage =
-                    // ignore: lines_longer_than_80_chars
-                    'No favorites yet. Tap on a card and then a star and it will appear here.';
-                const unexpectedMessage = 'Oops... Something went wrong.';
-                if (failure is ReadingFromEmptyFailure) return noItemsMessage;
-                return unexpectedMessage;
-              }(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.brown[500],
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.brown.withValues(alpha: 0.4),
+                      Colors.brown.withValues(alpha: 0.5),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: size.width * .2),
+                child: Text(
+                  () {
+                    const noItemsMessage = 'No favorites yet. Tap on a card, star it and it will appear here.';
+                    const unexpectedMessage = 'Oops... Something went wrong.';
+                    if (failure is ReadingFromEmptyFailure) return noItemsMessage;
+                    return unexpectedMessage;
+                  }(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.brown[500],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -71,9 +91,14 @@ class _ListFailedLoadingContainerWidget extends StatelessWidget {
 }
 
 class _ListLoadedContainerWidget extends StatelessWidget {
-  const _ListLoadedContainerWidget(this.state, this.onReturning);
+  const _ListLoadedContainerWidget(
+    this.state,
+    this.onReturning, {
+    required this.isHistory,
+  });
   final CoffeeCardListLoaded state;
   final Function? onReturning;
+  final bool isHistory;
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +112,10 @@ class _ListLoadedContainerWidget extends StatelessWidget {
         ),
       );
     }
-    return CoffeeCardListSliverWidget(
+    return _CoffeeCardListSliverWidget(
       coffees: state.list,
       onReturning: onReturning,
+      isHistory: isHistory,
     );
   }
 }
@@ -111,19 +137,19 @@ class _CoffeeCardListLoadingWidget extends StatelessWidget {
   }
 }
 
-class CoffeeCardListSliverWidget extends StatelessWidget {
-  const CoffeeCardListSliverWidget({
+class _CoffeeCardListSliverWidget extends StatelessWidget {
+  const _CoffeeCardListSliverWidget({
     required this.coffees,
+    required this.isHistory,
     this.onReturning,
-    super.key,
   });
 
   final List<Coffee> coffees;
   final Function? onReturning;
+  final bool isHistory;
 
   @override
   Widget build(BuildContext context) {
-    final isHistory = coffees.length == StorageConstants.historyLimit;
     final indexOffset = isHistory ? 1 : 0;
     return SliverList(
       delegate: SliverChildBuilderDelegate(
