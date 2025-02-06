@@ -1,12 +1,9 @@
 import 'package:vgv_challenge/domain/domain.dart';
 
-/// Base state.
 abstract class CoffeeInteractionState {}
 
-/// Initial state.
 class CoffeeInteractionInitial extends CoffeeInteractionState {}
 
-/// States for comment submission.
 class CommentSubmissionInProgress extends CoffeeInteractionState {}
 
 class CommentSubmissionSuccess extends CoffeeInteractionState {}
@@ -16,7 +13,6 @@ class CommentSubmissionFailure extends CoffeeInteractionState {
   final Failure failure;
 }
 
-/// States for rating submission.
 class RatingSubmissionInProgress extends CoffeeInteractionState {}
 
 class RatingSubmissionSuccess extends CoffeeInteractionState {
