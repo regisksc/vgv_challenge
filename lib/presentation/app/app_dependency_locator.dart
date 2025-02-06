@@ -44,10 +44,10 @@ Future<void> setupServiceLocator() async {
     )
     ..registerSingleton<UpdateCoffee>(
       RateCoffee(storage: sl<Storage>()),
-      instanceName: 'commentCoffee',
+      instanceName: 'rateCoffee',
     )
     ..registerSingleton<UpdateCoffee>(
       CommentCoffee(storage: sl<Storage>()),
-      instanceName: 'rateCoffee',
+      instanceName: 'commentCoffee',
     );
 }

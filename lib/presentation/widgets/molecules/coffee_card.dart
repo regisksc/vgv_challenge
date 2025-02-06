@@ -30,21 +30,14 @@ class CoffeeCard extends StatelessWidget {
             Positioned(
               left: 16,
               top: 16,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: CoffeeTimeAgoWidget(
-                  date: coffee.seenAt,
-                  enableTimeAgoTimer: enableTimeAgoTimer,
-                ),
-              ),
+              child: CoffeeTimeAgoWidget(
+                date: coffee.seenAt,
+                enableTimeAgoTimer: enableTimeAgoTimer,
+              ).overBlackBackground(),
             ),
             Positioned(
               right: 16,
-              top: 20,
+              top: 16,
               child: Visibility(
                 // ignore: lines_longer_than_80_chars
                 visible: shouldShowRating ?? coffee.rating != CoffeeRating.unrated,

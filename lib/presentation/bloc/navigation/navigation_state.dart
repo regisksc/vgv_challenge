@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 abstract class NavigationState {}
 
 class NavigationInitial extends NavigationState {}
@@ -11,5 +13,5 @@ class NavigationRequested extends NavigationState {
 
   final String routeName;
   final Object? arguments;
-  final Function? onComplete;
+  final VoidCallback? onComplete;
 }

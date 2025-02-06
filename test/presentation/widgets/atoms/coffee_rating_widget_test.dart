@@ -1,3 +1,8 @@
+// ignore_for_file: lines_longer_than_80_chars
+
+import 'dart:async';
+
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,112 +10,149 @@ import 'package:mocktail/mocktail.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
-import '../../../helpers/mocks.dart';
+import '../../screens/main/bloc/main_screen_bloc_test.dart';
+
+class MockCoffeeInteractionBloc extends MockBloc<CoffeeInteractionEvent, CoffeeInteractionState>
+    implements CoffeeInteractionBloc {}
+
+class FakeCoffeeInteractionEvent extends Fake implements CoffeeInteractionEvent {}
+
+class FakeCoffeeInteractionState extends Fake implements CoffeeInteractionState {}
 
 void main() {
-  late UpdateCoffee commentCoffeeMock;
-  late UpdateCoffee rateCoffeeMock;
+  late CoffeeInteractionBloc coffeeInteractionBloc;
 
-  setUp(() async {
-    TestWidgetsFlutterBinding.ensureInitialized();
-    await sl.reset();
-
-    commentCoffeeMock = CommentCoffeeMock();
-    rateCoffeeMock = RateCoffeeMock();
+  setUpAll(() {
+    registerFallbackValue(FakeCoffeeInteractionEvent());
+    registerFallbackValue(FakeCoffeeInteractionState());
   });
 
-  Future<void> pumpWidget(WidgetTester tester, {required Widget widget}) async {
-    sl
-      ..registerSingleton<UpdateCoffee>(
-        commentCoffeeMock,
-        instanceName: 'commentCoffee',
-      )
-      ..registerSingleton<UpdateCoffee>(
-        rateCoffeeMock,
-        instanceName: 'rateCoffee',
-      );
+  setUp(() {
+    coffeeInteractionBloc = MockCoffeeInteractionBloc();
+  });
 
-    await tester.pumpWidget(
-      MultiBlocProvider(
-        providers: [
-          BlocProvider<CoffeeInteractionBloc>(
-            create: (context) => CoffeeInteractionBloc(
-              commentCoffee: sl.get(instanceName: 'commentCoffee'),
-              rateCoffee: sl.get(instanceName: 'rateCoffee'),
+  group('CoffeeRatingWidget', () {
+    final testCoffee = Coffee(
+      id: 'test1',
+      imagePath: '/test/path.png',
+      seenAt: DateTime.now(),
+      rating: CoffeeRating.twoStars,
+    );
+
+    testWidgets('displays correct stars initially', (tester) async {
+      when(() => coffeeInteractionBloc.state).thenReturn(CoffeeInteractionInitial());
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CoffeeInteractionBloc>.value(
+            value: coffeeInteractionBloc,
+            child: Scaffold(
+              body: CoffeeRatingWidget(coffee: testCoffee, canTap: true),
             ),
           ),
-        ],
-        child: MaterialApp(home: widget),
-      ),
-    );
-    await tester.pumpAndSettle(const Duration(seconds: 1));
-  }
-
-  testWidgets(
-    'CoffeeRatingWidget displays 5 stars',
-    (WidgetTester tester) async {
-      // Arrange
-      final coffee = Coffee(
-        id: 'r1',
-        imagePath: '/dummy/path',
-        seenAt: DateTime(2025),
-        rating: CoffeeRating.threeStars,
+        ),
       );
+      final filledStarFinder = find.descendant(
+        of: find.byType(CoffeeRatingWidget),
+        matching:
+            find.byWidgetPredicate((widget) => widget is Icon && widget.size == 22 && widget.color == Colors.amber),
+      );
+      final unfilledStarFinder = find.descendant(
+        of: find.byType(CoffeeRatingWidget),
+        matching: find
+            .byWidgetPredicate((widget) => widget is Icon && widget.size == 22 && widget.color == Colors.brown[100]),
+      );
+      expect(filledStarFinder, findsNWidgets(2));
+      expect(unfilledStarFinder, findsNWidgets(3));
+    });
 
-      await pumpWidget(
-        tester,
-        widget: MaterialApp(
-          home: Scaffold(
-            body: CoffeeRatingWidget(coffee: coffee),
+    testWidgets('shows loading dialog then updates stars on rating success', (tester) async {
+      final controller = StreamController<CoffeeInteractionState>();
+      coffeeInteractionBloc = MockCoffeeInteractionBloc();
+      when(() => coffeeInteractionBloc.state).thenReturn(CoffeeInteractionInitial());
+      whenListen(coffeeInteractionBloc, controller.stream);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CoffeeInteractionBloc>.value(
+            value: coffeeInteractionBloc,
+            child: Scaffold(
+              body: CoffeeRatingWidget(coffee: testCoffee, canTap: true),
+            ),
           ),
         ),
       );
 
-      // Act
-      final outerIcons = find.byWidgetPredicate((widget) {
-        return widget is Icon && widget.size == 25;
-      });
-
-      // Assert
-      expect(outerIcons, findsNWidgets(5));
-    },
-  );
-
-  testWidgets(
-    'CoffeeRatingWidget star tap prints debug message',
-    (WidgetTester tester) async {
-      // Arrange
-      final coffee = Coffee(
-        id: 'r2',
-        imagePath: '/dummy/path',
-        seenAt: DateTime(2025),
-        rating: CoffeeRating.twoStars,
-      );
-
-      when(() => rateCoffeeMock.call(any())).thenAnswer(
-        (_) => Future.value(
-          const Result.success(null),
-        ),
-      );
-
-      await pumpWidget(
-        tester,
-        widget: MaterialApp(
-          home: Scaffold(
-            body: CoffeeRatingWidget(coffee: coffee, canTap: true),
-          ),
-        ),
-      );
-
-      // Act
-      await tester.tap(
-        find.byWidgetPredicate((widget) {
-          return widget is Icon && widget.size == 22;
-        }).first,
-      );
+      final starFinder = find
+          .descendant(
+            of: find.byType(CoffeeRatingWidget),
+            matching: find.byWidgetPredicate((widget) => widget is Icon && widget.size == 22),
+          )
+          .at(3);
+      final center = tester.getCenter(starFinder);
+      await tester.tapAt(center);
       await tester.pump();
 
-      // Assert
-    },
-  );
+      controller.add(RatingSubmissionInProgress());
+      await tester.pump();
+
+      controller.add(RatingSubmissionSuccess(rating: CoffeeRating.fourStars));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoadingDialog), findsNothing);
+      final filledStarFinder = find.descendant(
+        of: find.byType(CoffeeRatingWidget),
+        matching:
+            find.byWidgetPredicate((widget) => widget is Icon && widget.size == 22 && widget.color == Colors.amber),
+      );
+      final unfilledStarFinder = find.descendant(
+        of: find.byType(CoffeeRatingWidget),
+        matching: find
+            .byWidgetPredicate((widget) => widget is Icon && widget.size == 22 && widget.color == Colors.brown[100]),
+      );
+      expect(filledStarFinder, findsNWidgets(4));
+      expect(unfilledStarFinder, findsNWidgets(1));
+
+      await controller.close();
+    });
+
+    testWidgets('shows loading dialog then snack bar on rating failure', (tester) async {
+      final controller = StreamController<CoffeeInteractionState>();
+      coffeeInteractionBloc = MockCoffeeInteractionBloc();
+      when(() => coffeeInteractionBloc.state).thenReturn(CoffeeInteractionInitial());
+      whenListen(coffeeInteractionBloc, controller.stream);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: BlocProvider<CoffeeInteractionBloc>.value(
+            value: coffeeInteractionBloc,
+            child: Scaffold(
+              body: CoffeeRatingWidget(coffee: testCoffee, canTap: true),
+            ),
+          ),
+        ),
+      );
+
+      final starFinder = find
+          .descendant(
+            of: find.byType(CoffeeRatingWidget),
+            matching: find.byWidgetPredicate((widget) => widget is Icon && widget.size == 22),
+          )
+          .at(3);
+      final center = tester.getCenter(starFinder);
+      await tester.tapAt(center);
+      await tester.pump();
+
+      controller.add(RatingSubmissionInProgress());
+      await tester.pump();
+
+      controller.add(RatingSubmissionFailure(failure: FakeFailure()));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LoadingDialog), findsNothing);
+      expect(find.text('Rating failed'), findsOneWidget);
+
+      await controller.close();
+    });
+  });
 }

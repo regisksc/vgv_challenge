@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 abstract class NavigationEvent {}
 
 class NavigateTo extends NavigationEvent {
@@ -9,5 +11,5 @@ class NavigateTo extends NavigationEvent {
 
   final String routeName;
   final Object? arguments;
-  final Function? onComplete;
+  final VoidCallback? onComplete;
 }

@@ -47,27 +47,7 @@ class _MainScreenState extends State<MainScreen> {
                 controller: _scrollController,
                 slivers: [
                   CustomAppBarWidget(scrollController: _scrollController),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      // ignore: lines_longer_than_80_chars
-                      child: BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
-                        builder: (context, state) {
-                          // ignore: lines_longer_than_80_chars
-                          if (state is CoffeeCardListLoaded && state.list.isEmpty) {
-                            return const Offstage();
-                          }
-                          return const Text(
-                            'Last seen',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                  const _SectionTitle(),
                   CoffeeCardListWidget(
                     onReturning: () {
                       context.read<CoffeeCardListBloc>().add(
@@ -107,6 +87,35 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
         floatingActionButton: _showFavoritesButton ? favoriteCTAButton : null,
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        // ignore: lines_longer_than_80_chars
+        child: BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
+          builder: (context, state) {
+            // ignore: lines_longer_than_80_chars
+            if (state is CoffeeCardListLoaded && state.list.isEmpty) {
+              return const Offstage();
+            }
+            return const Text(
+              'Last seen',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -10,14 +10,14 @@ class NavigationListenerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Builder(
       builder: (innerContext) => BlocListener<NavigationBloc, NavigationState>(
-        listener: (blocContext, state) {
+        listener: (blocContext, state) async {
           if (state is NavigationRequested) {
-            Navigator.pushNamed(
+            await Navigator.pushNamed(
               innerContext,
               state.routeName,
               arguments: state.arguments,
             );
-            
+            state.onComplete?.call();
           }
         },
         child: child,

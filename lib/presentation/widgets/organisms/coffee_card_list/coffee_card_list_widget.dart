@@ -10,7 +10,7 @@ class CoffeeCardListWidget extends StatelessWidget {
     this.isHistory = true,
     super.key,
   });
-  final Function? onReturning;
+  final VoidCallback? onReturning;
   final bool isHistory;
 
   @override
@@ -70,9 +70,12 @@ class _ListFailedLoadingContainerWidget extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: size.width * .2),
                 child: Text(
                   () {
+                    // ignore: lines_longer_than_80_chars
                     const noItemsMessage = 'No favorites yet. Tap on a card, star it and it will appear here.';
                     const unexpectedMessage = 'Oops... Something went wrong.';
-                    if (failure is ReadingFromEmptyFailure) return noItemsMessage;
+                    if (failure is ReadingFromEmptyFailure) {
+                      return noItemsMessage;
+                    }
                     return unexpectedMessage;
                   }(),
                   textAlign: TextAlign.center,
@@ -97,7 +100,7 @@ class _ListLoadedContainerWidget extends StatelessWidget {
     required this.isHistory,
   });
   final CoffeeCardListLoaded state;
-  final Function? onReturning;
+  final VoidCallback? onReturning;
   final bool isHistory;
 
   @override
@@ -145,7 +148,7 @@ class _CoffeeCardListSliverWidget extends StatelessWidget {
   });
 
   final List<Coffee> coffees;
-  final Function? onReturning;
+  final VoidCallback? onReturning;
   final bool isHistory;
 
   @override
@@ -163,6 +166,7 @@ class _CoffeeCardListSliverWidget extends StatelessWidget {
                     NavigateTo(
                       routeName: AppRoutes.details,
                       arguments: coffee,
+                      onComplete: onReturning,
                     ),
                   ),
             ),

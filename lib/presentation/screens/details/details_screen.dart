@@ -20,23 +20,25 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   late final TextEditingController _controller;
   bool _isFavorite = false;
+  late final CoffeeInteractionBloc _coffeeInteractionBloc;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.coffee.comment ?? '');
     _isFavorite = widget.coffee.isFavorite;
+    _coffeeInteractionBloc = context.read<CoffeeInteractionBloc>();
   }
 
   @override
   void dispose() {
     if (_controller.text.isNotEmpty) {
-      context.read<CoffeeInteractionBloc>().add(
-            CommentChanged(
-              comment: _controller.text,
-              coffee: widget.coffee,
-            ),
-          );
+      _coffeeInteractionBloc.add(
+        CommentChanged(
+          comment: _controller.text,
+          coffee: widget.coffee,
+        ),
+      );
     }
     _controller.dispose();
     super.dispose();
@@ -57,7 +59,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             onPressed: _toggleFavorite,
             icon: Icon(
               Icons.star,
-              color: _isFavorite ? Colors.amber : Colors.grey,
+              color: _isFavorite ? Colors.amber : Colors.brown[100],
             ),
           ),
         ],
@@ -67,8 +69,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
           var message = 'Oops. Something went wrong!';
           if (state is CommentSubmissionSuccess) {
             message = 'Comment saved.';
-          } else if (state is RatingSubmissionSuccess) {
-            message = 'Rating saved.';
           } else if (state is CommentSubmissionFailure) {
             message = 'Commenting failed.';
           } else if (state is RatingSubmissionFailure) {

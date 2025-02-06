@@ -71,10 +71,10 @@ class AppWidget extends StatelessWidget {
             BlocProvider<CoffeeInteractionBloc>(
               create: (_) => CoffeeInteractionBloc(
                 commentCoffee: sl.get<UpdateCoffee>(
-                  instanceName: 'comment',
+                  instanceName: 'commentCoffee',
                 ),
                 rateCoffee: sl.get<UpdateCoffee>(
-                  instanceName: 'rating',
+                  instanceName: 'rateCoffee',
                 ),
               ),
             ),
