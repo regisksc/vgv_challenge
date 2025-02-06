@@ -1,11 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
-import '../../../helpers/helpers.dart';
+import '../../../helpers/helpers.dart' as h;
 
 // Mock class using Mocktail
 class MockGetCoffeeList extends Mock implements GetCoffeeList {}
@@ -19,8 +18,9 @@ void main() {
   setUp(() {
     mockGetCoffeeList = MockGetCoffeeList();
     coffeeCardListBloc = CoffeeCardListBloc(getList: mockGetCoffeeList);
-    failure = FakeFailure();
-    unexpectedInputFailure = UnexpectedInputFailure();
+
+    failure = h.failure;
+    unexpectedInputFailure = h.unexpectedInputFailure;
   });
 
   tearDown(() {
@@ -28,11 +28,6 @@ void main() {
   });
 
   group('CoffeeCardListBloc', () {
-    final tCoffeeList = [
-      CoffeeModel.fromEntity(dummyCoffee).copyWith(id: '1'),
-      CoffeeModel.fromEntity(dummyCoffee).copyWith(id: '2'),
-    ].asEntities;
-
     test('initial state should be CoffeeCardListLoading', () {
       expect(coffeeCardListBloc.state, const CoffeeCardListLoading());
     });
@@ -43,13 +38,13 @@ void main() {
       build: () {
         when(
           () => mockGetCoffeeList.call(),
-        ).thenAnswer((_) async => Result.success(tCoffeeList));
+        ).thenAnswer((_) async => Result.success(h.dummyCoffeeList));
         return coffeeCardListBloc;
       },
       act: (bloc) => bloc.add(LoadCoffeeCardList()),
       expect: () => [
         const CoffeeCardListLoading(),
-        CoffeeCardListLoaded(list: tCoffeeList),
+        CoffeeCardListLoaded(list: h.dummyCoffeeList),
       ],
       verify: (_) {
         verify(() => mockGetCoffeeList.call()).called(1);
@@ -61,9 +56,7 @@ void main() {
       'emits [CoffeeCardListLoading, CoffeeCardListFailedLoading] when LoadCoffeeCardList is added and getList returns failure',
       build: () {
         when(() => mockGetCoffeeList.call()).thenAnswer(
-          (_) async => Result.failure(
-            failure,
-          ),
+          (_) async => Result.failure(failure),
         );
         return coffeeCardListBloc;
       },
