@@ -61,6 +61,11 @@ class AppWidget extends StatelessWidget {
         onGenerateRoute: AppRoutes.onGenerateRoute,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          child: child,
+        ),
         home: const NavigationListenerWidget(
           child: Material(
             child: MainScreen(),
