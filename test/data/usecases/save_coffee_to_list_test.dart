@@ -217,7 +217,7 @@ void main() {
           value: captureAny(named: 'value'),
         ),
       ).captured;
-      expect(captured[0], equals('favorites'));
+      expect(captured[0], equals(StorageConstants.favoritesKey));
       final writtenValue = captured[1] as String;
       final decoded = jsonDecode(writtenValue) as List;
       expect(decoded.length, equals(1));
@@ -259,7 +259,7 @@ void main() {
           value: captureAny(named: 'value'),
         ),
       ).captured;
-      expect(captured[0], equals('favorites'));
+      expect(captured[0], equals(StorageConstants.favoritesKey));
       final writtenValue = captured[1] as String;
       final decoded = jsonDecode(writtenValue) as List;
       expect(decoded.length, equals(3));
@@ -274,7 +274,7 @@ void main() {
         () => mockStorage.read(
           key: any(named: 'key'),
         ),
-      ).thenThrow(ReadingFailure(key: 'favorites'));
+      ).thenThrow(ReadingFailure(key: StorageConstants.favoritesKey));
 
       // Act
       final result = await saveCoffeeToFavorites.call(coffee);
@@ -329,7 +329,7 @@ void main() {
         () => mockStorage.read(
           key: any(named: 'key'),
         ),
-      ).thenThrow(WritingFailure(key: 'favorites'));
+      ).thenThrow(WritingFailure(key: StorageConstants.favoritesKey));
 
       // Act
       final result = await saveCoffeeToFavorites.call(coffee);
@@ -360,6 +360,25 @@ void main() {
 
       // Assert
       expect(result.isSuccess, isTrue);
+    });
+
+    // ignore: lines_longer_than_80_chars
+    test('returns ItemAlreadySaved failure if coffee with same ID is already in the list', () async {
+      // Arrange
+      final coffee = generateFakeCoffee();
+      final existingList = [CoffeeModel.fromEntity(coffee).toJson()];
+      final existingJson = jsonEncode(existingList);
+
+      when(
+        () => mockStorage.read(key: any(named: 'key')),
+      ).thenAnswer((_) async => existingJson);
+
+      // Act
+      final result = await saveCoffeeToHistory.call(coffee);
+
+      // Assert
+      expect(result.isFailure, isTrue);
+      expect(result.failure, isA<ItemAlreadySaved>());
     });
   });
 }

@@ -50,10 +50,11 @@ class _MainScreenState extends State<MainScreen> {
                   const _SectionTitle(),
                   CoffeeCardListWidget(
                     onReturning: () {
-                      context.read<CoffeeCardListBloc>().add(
-                            LoadCoffeeCardList(),
-                          );
-                      context.read<MainScreenBloc>().add(ReloadLoadedImage());
+                      final bloc = context.read<CoffeeCardListBloc>();
+                      debugPrint(bloc.toString());
+                      bloc.add(
+                        LoadCoffeeCardList(),
+                      );
                     },
                   ),
                   const SliverToBoxAdapter(child: SizedBox(height: 80)),

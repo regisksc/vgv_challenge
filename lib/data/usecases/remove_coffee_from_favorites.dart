@@ -10,12 +10,13 @@ class RemoveCoffeeFromFavorites extends Unfavorite {
 
   @override
   Future<Result<void, Failure>> call([Coffee? params]) async {
+    const key = StorageConstants.favoritesKey;
     try {
       if (params == null) return Result.failure(UnexpectedInputFailure());
-      final favoriteList = await storage.getCoffeeList(
-        StorageConstants.favoritesKey,
-      );
-      if (favoriteList == null || favoriteList.isEmpty) throw ReadingFailure();
+      final favoriteList = await storage.getCoffeeList(key);
+      if (favoriteList == null || favoriteList.isEmpty) {
+        throw ReadingFailure(key: key);
+      }
       final initialLength = favoriteList.length;
       favoriteList.removeWhere((element) => element.id == params.id);
       if (favoriteList.length < initialLength) {

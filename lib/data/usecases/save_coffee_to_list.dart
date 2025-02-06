@@ -30,6 +30,10 @@ abstract class SaveCoffeeToList extends SaveCoffee {
         model = model.copyWith(isFavorite: true);
       }
 
+      if (coffeesList.any((item) => item['id'] == model.id)) {
+        return Result.failure(ItemAlreadySaved(key: key));
+      }
+
       coffeesList.add(model.toJson());
       while (coffeesList.length > limit) {
         coffeesList.removeAt(0);

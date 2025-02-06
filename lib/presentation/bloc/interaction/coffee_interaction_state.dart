@@ -4,6 +4,7 @@ abstract class CoffeeInteractionState {}
 
 class CoffeeInteractionInitial extends CoffeeInteractionState {}
 
+class CommentIsGettingInput extends CoffeeInteractionState {}
 class CommentSubmissionInProgress extends CoffeeInteractionState {}
 
 class CommentSubmissionSuccess extends CoffeeInteractionState {}

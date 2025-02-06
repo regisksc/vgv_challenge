@@ -63,3 +63,7 @@ class WritingFailure extends StorageFailure {
   @override
   bool? get stringify => false;
 }
+
+class ItemAlreadySaved extends WritingFailure {
+  ItemAlreadySaved({required super.key});
+}

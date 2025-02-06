@@ -47,9 +47,7 @@ class _CoffeeRatingWidgetState extends State<CoffeeRatingWidget> {
             Navigator.of(context, rootNavigator: true).pop();
             _dialogOpen = false;
           }
-          setState(() {
-            _displayedRatingIndex = state.rating.index;
-          });
+          setState(() => _displayedRatingIndex = state.rating.index);
         } else if (state is RatingSubmissionFailure) {
           if (_dialogOpen) {
             Navigator.of(context, rootNavigator: true).pop();

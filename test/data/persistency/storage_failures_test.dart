@@ -88,5 +88,18 @@ void main() {
       expect(failure.props, <Object?>[]);
       expect(failure.stringify, false);
     });
+
+        test('ItemAlreadySaved creates instance with correct message', () {
+      // Arrange
+      const key = 'testKey';
+
+      // Act
+      final failure = ItemAlreadySaved(key: key);
+
+      // Assert
+      expect(failure.message, 'Storage: Could not save value for key $key');
+      expect(failure.props, <Object?>[]);
+      expect(failure.stringify, false);
+    });
   });
 }

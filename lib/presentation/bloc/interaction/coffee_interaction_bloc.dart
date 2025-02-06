@@ -22,13 +22,19 @@ class CoffeeInteractionBloc extends Bloc<CoffeeInteractionEvent, CoffeeInteracti
   Timer? _debounce;
   String _lastComment = '';
 
+  Emitter<CoffeeInteractionState>? _emitter;
+
   void _onCommentChanged(
     CommentChanged event,
     Emitter<CoffeeInteractionState> emit,
   ) {
+    _emitter = emit;
+    emit(CommentIsGettingInput());
     _lastComment = event.comment;
     _debounce?.cancel();
-    _debounce = Timer(const Duration(seconds: 3), () {
+    _debounce = Timer(const Duration(seconds: 5), () {
+      if (_emitter == null) return;
+
       add(SubmitComment(coffee: event.coffee));
     });
   }
@@ -37,6 +43,7 @@ class CoffeeInteractionBloc extends Bloc<CoffeeInteractionEvent, CoffeeInteracti
     SubmitComment event,
     Emitter<CoffeeInteractionState> emit,
   ) async {
+    _emitter = emit;
     emit(CommentSubmissionInProgress());
     final params = UpdateCoffeeParams(
       coffee: event.coffee,
@@ -44,12 +51,8 @@ class CoffeeInteractionBloc extends Bloc<CoffeeInteractionEvent, CoffeeInteracti
     );
     final result = await _commentCoffee(params);
     result.when(
-      (updatedCoffee) {
-        emit(CommentSubmissionSuccess());
-      },
-      (failure) {
-        emit(CommentSubmissionFailure(failure: failure));
-      },
+      (updatedCoffee) => emit(CommentSubmissionSuccess()),
+      (failure) => emit(CommentSubmissionFailure(failure: failure)),
     );
   }
 

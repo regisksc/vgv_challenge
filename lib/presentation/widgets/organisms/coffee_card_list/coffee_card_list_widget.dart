@@ -8,14 +8,17 @@ class CoffeeCardListWidget extends StatelessWidget {
   const CoffeeCardListWidget({
     this.onReturning,
     this.isHistory = true,
+    this.blocInstance,
     super.key,
   });
   final VoidCallback? onReturning;
   final bool isHistory;
+  final CoffeeCardListBloc? blocInstance;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
+      bloc: blocInstance,
       builder: (context, state) {
         if (state is CoffeeCardListLoading) {
           return const _CoffeeCardListLoadingWidget();
