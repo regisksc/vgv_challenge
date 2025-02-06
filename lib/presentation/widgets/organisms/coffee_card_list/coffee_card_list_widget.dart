@@ -62,8 +62,8 @@ class _ListFailedLoadingContainerWidget extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colors.brown.withValues(alpha: 0.4),
-                      Colors.brown.withValues(alpha: 0.5),
+                      Colors.brown[900]!.withValues(alpha: 0.6),
+                      Colors.brown[50]!.withValues(alpha: 0.9),
                     ],
                   ),
                 ),

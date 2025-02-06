@@ -38,8 +38,8 @@ class AppRoutes {
       builder: (context) {
         return BlocProvider(
           create: (_) => CoffeeCardListBloc(
-            getList: sl.get<GetFavoriteCoffeeList>(
-              instanceName: 'favorites',
+            getList: sl.get<GetCoffeeList>(
+              instanceName: StorageConstants.favoritesKey,
             ),
           )..add(LoadCoffeeCardList()),
           child: const FavoritesScreen(),
@@ -54,22 +54,12 @@ class AppRoutes {
     return MaterialPageRoute(
       builder: (context) {
         if (coffee == null) return const Scaffold();
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider<CoffeeInteractionBloc>(
-              create: (_) => CoffeeInteractionBloc(
-                commentCoffee: sl<UpdateCoffee>(instanceName: 'commentCoffee'),
-                rateCoffee: sl<UpdateCoffee>(instanceName: 'rateCoffee'),
-              ),
-            ),
-            BlocProvider<FavoritesBloc>(
-              create: (_) => FavoritesBloc(
-                coffee: coffee,
-                saveCoffee: sl<SaveCoffee>(instanceName: 'saveFavorite'),
-                unfavoriteCoffee: sl<Unfavorite>(),
-              ),
-            ),
-          ],
+        return BlocProvider<FavoritesBloc>(
+          create: (_) => FavoritesBloc(
+            coffee: coffee,
+            saveCoffee: sl<SaveCoffee>(instanceName: 'saveFavorite'),
+            unfavoriteCoffee: sl<Unfavorite>(),
+          ),
           child: DetailsScreen(coffee: coffee),
         );
       },

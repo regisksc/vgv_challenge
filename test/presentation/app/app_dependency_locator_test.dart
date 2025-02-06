@@ -41,7 +41,12 @@ void main() {
     expect(sl.isRegistered<FetchCoffeeFromRemote>(), isTrue);
     expect(sl.isRegistered<FetchCoffeeFromHistory>(), isTrue);
     expect(sl.isRegistered<GetCoffeeList>(instanceName: 'history'), isTrue);
-    expect(sl.isRegistered<GetCoffeeList>(instanceName: 'favorites'), isTrue);
+    expect(
+      sl.isRegistered<GetCoffeeList>(
+        instanceName: StorageConstants.favoritesKey,
+      ),
+      isTrue,
+    );
     expect(sl.isRegistered<SaveCoffee>(instanceName: 'saveFavorite'), isTrue);
     expect(sl.isRegistered<SaveCoffee>(instanceName: 'saveHistory'), isTrue);
     expect(sl.isRegistered<Unfavorite>(), isTrue);

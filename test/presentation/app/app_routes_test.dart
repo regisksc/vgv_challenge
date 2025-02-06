@@ -81,14 +81,14 @@ void main() {
 
     sl
       ..registerSingleton<Box<String>>(box)
-      ..registerSingleton<GetCoffeeList>(getFavoritesListMock, instanceName: 'favorites')
+      ..registerSingleton<GetCoffeeList>(getFavoritesListMock, instanceName: StorageConstants.favoritesKey)
       ..registerSingleton<GetCoffeeList>(getHistoryListMock, instanceName: 'history')
       ..registerSingleton<FetchCoffeeFromRemote>(fetchCoffeeFromRemoteMock)
       ..registerSingleton<FetchCoffeeFromHistory>(fetchCoffeeFromHistoryMock)
       ..registerSingleton<SaveCoffeeToHistory>(saveCoffeeToHistoryMock)
       ..registerSingleton<UpdateCoffee>(commentCoffeeMock, instanceName: 'commentCoffee')
       ..registerSingleton<UpdateCoffee>(rateCoffeeMock, instanceName: 'rateCoffee')
-      ..registerSingleton(favoritesBloc, instanceName: 'favorites')
+      ..registerSingleton(favoritesBloc, instanceName: StorageConstants.favoritesKey)
       ..registerSingleton(historyBloc, instanceName: 'history')
       ..registerSingleton(
         MainScreenBloc(

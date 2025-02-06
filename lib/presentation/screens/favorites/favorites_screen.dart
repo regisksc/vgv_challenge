@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
@@ -10,7 +11,9 @@ class FavoritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => CoffeeCardListBloc(
-        getList: sl.get<GetCoffeeList>(instanceName: 'favorites'),
+        getList: sl.get<GetCoffeeList>(
+          instanceName: StorageConstants.favoritesKey,
+        ),
       )..add(LoadCoffeeCardList()),
       child: SafeArea(
         child: Scaffold(
@@ -18,8 +21,15 @@ class FavoritesScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Favorite coffees'),
           ),
-          body: const CustomScrollView(
-            slivers: [CoffeeCardListWidget(isHistory: false)],
+          body: CustomScrollView(
+            slivers: [
+              CoffeeCardListWidget(
+                isHistory: false,
+                onReturning: () => context.read<CoffeeCardListBloc>().add(
+                      LoadCoffeeCardList(),
+                    ),
+              ),
+            ],
           ),
         ),
       ),

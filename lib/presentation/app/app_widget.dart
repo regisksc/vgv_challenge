@@ -61,16 +61,8 @@ class AppWidget extends StatelessWidget {
         onGenerateRoute: AppRoutes.onGenerateRoute,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: BlocProvider<CoffeeInteractionBloc>(
-          create: (_) => CoffeeInteractionBloc(
-            commentCoffee: sl.get<UpdateCoffee>(
-              instanceName: 'commentCoffee',
-            ),
-            rateCoffee: sl.get<UpdateCoffee>(
-              instanceName: 'rateCoffee',
-            ),
-          ),
-          child: const NavigationListenerWidget(
+        home: const NavigationListenerWidget(
+          child: Material(
             child: MainScreen(),
           ),
         ),

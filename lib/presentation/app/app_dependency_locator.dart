@@ -29,7 +29,7 @@ Future<void> setupServiceLocator() async {
     )
     ..registerSingleton<GetCoffeeList>(
       GetFavoriteCoffeeList(storage: sl<Storage>()),
-      instanceName: 'favorites',
+      instanceName: StorageConstants.favoritesKey,
     )
     ..registerSingleton<SaveCoffee>(
       SaveCoffeeToFavorites(storage: sl<Storage>()),

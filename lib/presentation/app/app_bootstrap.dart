@@ -41,6 +41,16 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (context) => CoffeeInteractionBloc(
+            commentCoffee: sl.get<UpdateCoffee>(
+              instanceName: 'commentCoffee',
+            ),
+            rateCoffee: sl.get<UpdateCoffee>(
+              instanceName: 'rateCoffee',
+            ),
+          ),
+        ),
+        BlocProvider(
           create: (context) => CoffeeCardListBloc(getList: getList)
             ..add(
               LoadCoffeeCardList(),
