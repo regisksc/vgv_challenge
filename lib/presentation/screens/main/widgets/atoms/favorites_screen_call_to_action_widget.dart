@@ -10,8 +10,13 @@ class FavoritesScreenCallToActionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.read<MainScreenBloc>().add(
-            TapFavoritesCallToAction(),
+      onTap: () => context.read<NavigationBloc>().add(
+            NavigateTo(
+              routeName: AppRoutes.favorites,
+              onComplete: () => context.read<CoffeeCardListBloc>().add(
+                    LoadCoffeeCardList(),
+                  ),
+            ),
           ),
       child: Container(
         padding: const EdgeInsets.all(12),

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
 class AppBlocObserver extends BlocObserver {
@@ -35,12 +36,13 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   Hive.init(appDocumentDirectory.path);
 
   await setupServiceLocator();
-
+  final getList = sl.get<GetCoffeeList>(instanceName: 'history');
   runApp(
-    BlocProvider(
-      create: (context) => CoffeeCardListBloc(
-        getList: sl.get(instanceName: 'history'),
-      ),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => CoffeeCardListBloc(getList: getList)),
+        BlocProvider(create: (context) => NavigationBloc()),
+      ],
       child: await builder(),
     ),
   );

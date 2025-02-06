@@ -11,23 +11,7 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   }) : super(MainScreenLoading()) {
     on<FetchRandomCoffee>(_onFetchRandomCoffee);
     on<RefreshRandomCoffee>(_onRefreshMainScreen);
-    on<TapCoffee>((event, emit) {
-      if (state is MainScreenLoaded) {
-        final loadedState = state as MainScreenLoaded;
-        emit(
-          IsNavigating(
-            destination: AppRoutes.details,
-            coffee: event.coffee ?? loadedState.coffee,
-          ),
-        );
-      }
-    });
-    on<TapFavoritesCallToAction>((event, emit) {
-      emit(const IsNavigating(destination: AppRoutes.favorites, coffee: null));
-    });
-    on<ReloadLoadedImage>((event, emit) {
-      emit(MainScreenLoaded(coffee: event.coffee));
-    });
+    on<ReloadLoadedImage>(_onReloadLoadedImage);
   }
 
   final CoffeeCardListBloc historyListBloc;
@@ -35,15 +19,19 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   final GetCoffee localFetchCoffee;
   final SaveCoffee saveCoffeeToHistory;
 
+  Coffee? _latestCoffee;
+
   Future<void> _onFetchRandomCoffee(
     FetchRandomCoffee event,
     Emitter<MainScreenState> emit,
   ) async {
     if (state is CoffeeCardListLoading) return;
+    _latestCoffee = null;
     emit(MainScreenLoading());
     final apiFetchResult = await apiFetchCoffee();
     await apiFetchResult.when(
       (coffee) async {
+        _latestCoffee = coffee;
         final saveResult = await saveCoffeeToHistory(coffee);
         saveResult.when(
           (success) => historyListBloc.add(LoadCoffeeCardList()),
@@ -70,4 +58,15 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
     Emitter<MainScreenState> emit,
   ) async =>
       _onFetchRandomCoffee(FetchRandomCoffee(), emit);
+
+  Future<void> _onReloadLoadedImage(
+    ReloadLoadedImage event,
+    Emitter<MainScreenState> emit,
+  ) async {
+    if (_latestCoffee == null) {
+      return;
+    } else {
+      emit(MainScreenLoaded(coffee: _latestCoffee!));
+    }
+  }
 }

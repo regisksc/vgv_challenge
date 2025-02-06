@@ -17,10 +17,4 @@ class TapCoffee extends MainScreenEvent {
   final Coffee? coffee;
 }
 
-class TapFavoritesCallToAction extends MainScreenEvent {}
-
-class ReloadLoadedImage extends MainScreenEvent {
-  const ReloadLoadedImage({required this.coffee});
-
-  final Coffee coffee;
-}
+class ReloadLoadedImage extends MainScreenEvent {}

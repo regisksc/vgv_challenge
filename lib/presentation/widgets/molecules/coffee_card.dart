@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
@@ -7,24 +6,21 @@ class CoffeeCard extends StatelessWidget {
   const CoffeeCard({
     required this.coffee,
     super.key,
+    this.onTap,
     this.enableTimeAgoTimer = true,
-    this.shouldNavigate = true,
     this.shouldShowRating,
   });
+
   final Coffee coffee;
   final bool enableTimeAgoTimer;
-  final bool shouldNavigate;
   final bool? shouldShowRating;
+  final GestureTapCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     const height = 400.0;
     return GestureDetector(
-      onTap: shouldNavigate
-          ? () => context.read<MainScreenBloc>().add(
-                TapCoffee(coffee: coffee),
-              )
-          : null,
+      onTap: onTap,
       child: Card(
         elevation: 8,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -50,8 +46,8 @@ class CoffeeCard extends StatelessWidget {
               right: 16,
               top: 20,
               child: Visibility(
-                visible:
-                    shouldShowRating ?? coffee.rating != CoffeeRating.unrated,
+                // ignore: lines_longer_than_80_chars
+                visible: shouldShowRating ?? coffee.rating != CoffeeRating.unrated,
                 child: CoffeeRatingWidget(coffee: coffee),
               ),
             ),

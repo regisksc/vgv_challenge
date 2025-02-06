@@ -6,14 +6,12 @@ import 'package:vgv_challenge/presentation/presentation.dart';
 class DetailsScreen extends StatefulWidget {
   const DetailsScreen({
     required this.coffee,
-    required this.historyListBloc,
-    required this.favoritesListBloc,
     super.key,
+    this.onTap,
   });
 
   final Coffee coffee;
-  final CoffeeCardListBloc historyListBloc;
-  final CoffeeCardListBloc favoritesListBloc;
+  final GestureTapCallback? onTap;
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -91,8 +89,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
               children: [
                 CoffeeCard(
                   coffee: widget.coffee,
-                  shouldNavigate: false,
                   shouldShowRating: true,
+                  onTap: widget.onTap,
                 ),
                 const SizedBox(height: 16),
                 const Text(

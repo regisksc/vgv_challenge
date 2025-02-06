@@ -24,12 +24,3 @@ class MainScreenFailure extends MainScreenState {
 }
 
 class NewCoffeeTapped extends MainScreenState {}
-
-class IsNavigating extends MainScreenState {
-  const IsNavigating({required this.destination, required this.coffee});
-  final String destination;
-  final Coffee? coffee;
-
-  @override
-  List<Object?> get props => [destination, coffee];
-}

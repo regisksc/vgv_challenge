@@ -5,8 +5,13 @@ import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
 class CoffeeCardListWidget extends StatelessWidget {
-  const CoffeeCardListWidget({required this.title, super.key});
+  const CoffeeCardListWidget({
+    required this.title,
+    this.onReturning,
+    super.key,
+  });
   final String title;
+  final Function? onReturning;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class CoffeeCardListWidget extends StatelessWidget {
         if (state is CoffeeCardListLoading) {
           return const _CoffeeCardListLoadingWidget();
         } else if (state is CoffeeCardListLoaded) {
-          return _ListLoadedContainerWidget(state);
+          return _ListLoadedContainerWidget(state, onReturning);
         } else if (state is CoffeeCardListFailedLoading) {
           return _ListFailedLoadingContainerWidget(state.failure);
         } else {
@@ -66,8 +71,9 @@ class _ListFailedLoadingContainerWidget extends StatelessWidget {
 }
 
 class _ListLoadedContainerWidget extends StatelessWidget {
-  const _ListLoadedContainerWidget(this.state);
+  const _ListLoadedContainerWidget(this.state, this.onReturning);
   final CoffeeCardListLoaded state;
+  final Function? onReturning;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +87,10 @@ class _ListLoadedContainerWidget extends StatelessWidget {
         ),
       );
     }
-    return CoffeeCardListSliverWidget(coffees: state.list);
+    return CoffeeCardListSliverWidget(
+      coffees: state.list,
+      onReturning: onReturning,
+    );
   }
 }
 
@@ -103,9 +112,14 @@ class _CoffeeCardListLoadingWidget extends StatelessWidget {
 }
 
 class CoffeeCardListSliverWidget extends StatelessWidget {
-  const CoffeeCardListSliverWidget({required this.coffees, super.key});
+  const CoffeeCardListSliverWidget({
+    required this.coffees,
+    this.onReturning,
+    super.key,
+  });
 
   final List<Coffee> coffees;
+  final Function? onReturning;
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +131,15 @@ class CoffeeCardListSliverWidget extends StatelessWidget {
           final coffee = coffees[index + indexOffset];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: CoffeeCard(coffee: coffee),
+            child: CoffeeCard(
+              coffee: coffee,
+              onTap: () => context.read<NavigationBloc>().add(
+                    NavigateTo(
+                      routeName: AppRoutes.details,
+                      arguments: coffee,
+                    ),
+                  ),
+            ),
           );
         },
         childCount: coffees.length - indexOffset,

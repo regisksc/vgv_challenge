@@ -38,8 +38,8 @@ class CoffeeImageHeaderWidget extends StatelessWidget {
                           fit: BoxFit.cover,
                         ),
                         GestureDetector(
-                          onTap: () => context.read<MainScreenBloc>().add(
-                                TapCoffee(coffee: state.coffee),
+                          onTap: () => context.read<NavigationBloc>().add(
+                                NavigateTo(routeName: AppRoutes.details, ),
                               ),
                         ),
                       ],

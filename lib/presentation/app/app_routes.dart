@@ -11,7 +11,6 @@ typedef DetailsRouteParams = ({
 });
 
 class AppRoutes {
-  static const String main = '/';
   static const String details = '/details';
   static const String favorites = '/favorites';
 
@@ -19,14 +18,8 @@ class AppRoutes {
     RouteSettings settings,
   ) {
     switch (settings.name) {
-      case main:
-        return _buildMainRoute();
       case details:
-        final args = settings.arguments as ({
-          Coffee coffee,
-          CoffeeCardListBloc historyBloc,
-          CoffeeCardListBloc favoritesBloc,
-        })?;
+        final args = settings.arguments as Coffee?;
         return _buildDetailsRoute(args);
       case favorites:
         return _buildFavoritesRoute();
@@ -38,31 +31,6 @@ class AppRoutes {
           ),
         );
     }
-  }
-
-  static MaterialPageRoute<MaterialPageRoute<dynamic>> _buildMainRoute() {
-    return MaterialPageRoute(
-      builder: (_) => MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) => CoffeeCardListBloc(
-              getList: sl.get<GetCoffeeList>(instanceName: 'history'),
-            )..add(LoadCoffeeCardList()),
-          ),
-          BlocProvider<CoffeeInteractionBloc>(
-            create: (_) => CoffeeInteractionBloc(
-              commentCoffee: sl.get<UpdateCoffee>(
-                instanceName: 'comment',
-              ),
-              rateCoffee: sl.get<UpdateCoffee>(
-                instanceName: 'rating',
-              ),
-            ),
-          ),
-        ],
-        child: MainScreen(),
-      ),
-    );
   }
 
   static MaterialPageRoute<MaterialPageRoute<dynamic>> _buildFavoritesRoute() {
@@ -81,38 +49,28 @@ class AppRoutes {
   }
 
   static MaterialPageRoute<MaterialPageRoute<dynamic>> _buildDetailsRoute(
-    DetailsRouteParams? args,
+    Coffee? coffee,
   ) {
     return MaterialPageRoute(
       builder: (context) {
-        if (args == null) return const Scaffold();
+        if (coffee == null) return const Scaffold();
         return MultiBlocProvider(
           providers: [
             BlocProvider<CoffeeInteractionBloc>(
               create: (_) => CoffeeInteractionBloc(
-                commentCoffee: sl.get<UpdateCoffee>(
-                  instanceName: 'commentCoffee',
-                ),
-                rateCoffee: sl.get<UpdateCoffee>(
-                  instanceName: 'rateCoffee',
-                ),
+                commentCoffee: sl<UpdateCoffee>(instanceName: 'commentCoffee'),
+                rateCoffee: sl<UpdateCoffee>(instanceName: 'rateCoffee'),
               ),
             ),
             BlocProvider<FavoritesBloc>(
               create: (_) => FavoritesBloc(
-                coffee: args.coffee,
-                saveCoffee: sl.get<SaveCoffee>(
-                  instanceName: 'saveFavorite',
-                ),
-                unfavoriteCoffee: sl.get<Unfavorite>(),
+                coffee: coffee,
+                saveCoffee: sl<SaveCoffee>(instanceName: 'saveFavorite'),
+                unfavoriteCoffee: sl<Unfavorite>(),
               ),
             ),
           ],
-          child: DetailsScreen(
-            coffee: args.coffee,
-            historyListBloc: args.historyBloc,
-            favoritesListBloc: args.favoritesBloc,
-          ),
+          child: DetailsScreen(coffee: coffee),
         );
       },
     );
