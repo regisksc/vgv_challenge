@@ -5,23 +5,17 @@ import 'package:mocktail/mocktail.dart';
 import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 
+import '../../helpers/fakes.dart';
 import '../../helpers/mocks.dart';
 
 void main() {
   late StorageMock fakeStorage;
   late CommentCoffee commentCoffee;
-  late Coffee dummyCoffee;
   late UpdateCoffeeParams paramsWithComment;
 
   setUp(() {
     fakeStorage = StorageMock();
     commentCoffee = CommentCoffee(storage: fakeStorage);
-    dummyCoffee = Coffee(
-      id: 'id1',
-      imagePath: 'dummy.jpg',
-      seenAt: DateTime.now(),
-      comment: 'Old comment',
-    );
 
     paramsWithComment = UpdateCoffeeParams(
       coffee: dummyCoffee,

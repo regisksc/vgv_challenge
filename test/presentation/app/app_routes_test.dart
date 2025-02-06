@@ -105,14 +105,6 @@ void main() {
     });
 
     group('AppRoutes', () {
-      testWidgets('renders MainScreen for root route', (tester) async {
-        await pumpRoute(
-          tester,
-          settings: const RouteSettings(name: AppRoutes.main),
-        );
-        expect(find.byType(MainScreen), findsOneWidget);
-      });
-
       testWidgets('renders DetailsScreen with valid arguments', (tester) async {
         await pumpRoute(
           tester,

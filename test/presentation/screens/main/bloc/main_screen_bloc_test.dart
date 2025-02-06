@@ -5,6 +5,8 @@ import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
+import '../../../../helpers/fakes.dart';
+
 class MockGetCoffee extends Mock implements GetCoffee {}
 
 class MockSaveCoffee extends Mock implements SaveCoffee {}
@@ -17,7 +19,6 @@ void main() {
   late MockGetCoffee mockLocalFetchCoffee;
   late MockSaveCoffee mockSaveCoffeeToHistory;
   late MainScreenBloc bloc;
-  late Coffee dummyCoffee;
 
   setUpAll(() {
     registerFallbackValue(LoadCoffeeCardList());
@@ -28,13 +29,6 @@ void main() {
     mockApiFetchCoffee = MockGetCoffee();
     mockLocalFetchCoffee = MockGetCoffee();
     mockSaveCoffeeToHistory = MockSaveCoffee();
-    dummyCoffee = Coffee(
-      id: 'dummy_id',
-      imagePath: '/dummy/path.jpg',
-      seenAt: DateTime(2025),
-      comment: 'Test comment',
-      rating: CoffeeRating.threeStars,
-    );
 
     when(
       () => mockApiFetchCoffee(),
