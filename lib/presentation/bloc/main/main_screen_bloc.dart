@@ -34,7 +34,9 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
         _latestCoffee = coffee;
         final saveResult = await saveCoffeeToHistory(coffee);
         saveResult.when(
-          (success) => historyListBloc.add(LoadCoffeeCardList()),
+          (success) {
+            historyListBloc.add(LoadCoffeeCardList());
+          },
           (failure) => emit(MainScreenFailure(failure)),
         );
         emit(MainScreenLoaded(coffee: coffee));

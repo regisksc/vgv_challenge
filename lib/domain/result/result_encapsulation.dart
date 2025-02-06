@@ -45,12 +45,12 @@ class Result<T, F extends Failure> {
 abstract class Failure extends Error implements Equatable {
   Failure({this.message});
   final String? message;
+
+  @override
+  List<Object?> get props => [];
 }
 
 class UnexpectedInputFailure extends Failure {
-  @override
-  List<Object?> get props => [];
-
   @override
   bool? get stringify => false;
 }
