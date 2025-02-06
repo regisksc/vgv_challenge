@@ -14,7 +14,6 @@ class MockSaveCoffeeToHistory extends Mock implements SaveCoffee {}
 
 class FakeCoffee extends Fake implements Coffee {}
 
-class FakeFailure extends Fake implements Failure {}
 
 void main() {
   setUpAll(() {

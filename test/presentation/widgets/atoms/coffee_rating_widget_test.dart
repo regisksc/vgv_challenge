@@ -10,7 +10,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
-import '../../screens/main/bloc/main_screen_bloc_test.dart';
+import '../../../helpers/helpers.dart';
 
 class MockCoffeeInteractionBloc extends MockBloc<CoffeeInteractionEvent, CoffeeInteractionState>
     implements CoffeeInteractionBloc {}

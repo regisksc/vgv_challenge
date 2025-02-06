@@ -1,3 +1,4 @@
+import 'package:mocktail/mocktail.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 
 Coffee get dummyCoffee => Coffee(
@@ -6,3 +7,5 @@ Coffee get dummyCoffee => Coffee(
       seenAt: DateTime.now(),
       comment: 'Old comment',
     );
+
+class FakeFailure extends Fake implements Failure {}
