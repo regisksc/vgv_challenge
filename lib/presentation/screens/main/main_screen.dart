@@ -53,6 +53,10 @@ class _MainScreenState extends State<MainScreen> {
                       // ignore: lines_longer_than_80_chars
                       child: BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
                         builder: (context, state) {
+                          // ignore: lines_longer_than_80_chars
+                          if (state is CoffeeCardListLoaded && state.list.isEmpty) {
+                            return const Offstage();
+                          }
                           return const Text(
                             'Last seen',
                             style: TextStyle(
