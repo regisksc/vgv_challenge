@@ -40,7 +40,12 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => CoffeeCardListBloc(getList: getList)),
+        BlocProvider(
+          create: (context) => CoffeeCardListBloc(getList: getList)
+            ..add(
+              LoadCoffeeCardList(),
+            ),
+        ),
         BlocProvider(create: (context) => NavigationBloc()),
       ],
       child: await builder(),

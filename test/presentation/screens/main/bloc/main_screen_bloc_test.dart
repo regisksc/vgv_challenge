@@ -73,7 +73,7 @@ void main() {
 
     blocTest<MainScreenBloc, MainScreenState>(
       // ignore: lines_longer_than_80_chars
-      'emits [MainScreenLoading, MainScreenFailure] when API fetch succeeds but save fails',
+      'emits [MainScreenLoading, MainScreenFailure, MainScreenLoaded] when API fetch succeeds but save fails',
       build: () {
         when(
           () => apiFetchCoffee(),

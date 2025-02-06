@@ -10,8 +10,7 @@ class FetchCoffeeFromRemote implements GetCoffee {
   FetchCoffeeFromRemote({required this.httpClient});
   final HttpClient httpClient;
 
-  static const String _remoteUrl =
-      'https://coffee.alexflipnote.dev/random.json';
+  static const String _remoteUrl = 'https://coffee.alexflipnote.dev/random.json';
 
   @override
   Future<Result<Coffee, Failure>> call([void _]) async {
@@ -51,6 +50,8 @@ class FetchCoffeeFromRemote implements GetCoffee {
       final localFilePath = p.join(directory.path, fileName);
       final localFile = File(localFilePath);
       await localFile.writeAsBytes(response);
+      final fileExists = localFile.existsSync();
+      if (!fileExists) throw Exception('File removed right after saving');
       return localFilePath;
     } catch (e) {
       throw Exception('Failed to download and save image: $e');

@@ -30,7 +30,11 @@ class CoffeeCardListWidget extends StatelessWidget {
         } else if (state is CoffeeCardListFailedLoading) {
           return _ListFailedLoadingContainerWidget(state.failure);
         } else {
-          return const SizedBox.shrink();
+          return Container(
+            height: 500,
+            width: 500,
+            color: Colors.red,
+          );
         }
       },
     );
@@ -157,7 +161,7 @@ class _CoffeeCardListSliverWidget extends StatelessWidget {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          final coffee = coffees[index + indexOffset];
+          final coffee = coffees[(index + indexOffset)];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: CoffeeCard(

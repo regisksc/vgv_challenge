@@ -61,24 +61,15 @@ class AppWidget extends StatelessWidget {
         onGenerateRoute: AppRoutes.onGenerateRoute,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: MultiBlocProvider(
-          providers: [
-            BlocProvider<CoffeeCardListBloc>(
-              create: (_) => CoffeeCardListBloc(
-                getList: sl.get<GetCoffeeList>(instanceName: 'history'),
-              )..add(LoadCoffeeCardList()),
+        home: BlocProvider<CoffeeInteractionBloc>(
+          create: (_) => CoffeeInteractionBloc(
+            commentCoffee: sl.get<UpdateCoffee>(
+              instanceName: 'commentCoffee',
             ),
-            BlocProvider<CoffeeInteractionBloc>(
-              create: (_) => CoffeeInteractionBloc(
-                commentCoffee: sl.get<UpdateCoffee>(
-                  instanceName: 'commentCoffee',
-                ),
-                rateCoffee: sl.get<UpdateCoffee>(
-                  instanceName: 'rateCoffee',
-                ),
-              ),
+            rateCoffee: sl.get<UpdateCoffee>(
+              instanceName: 'rateCoffee',
             ),
-          ],
+          ),
           child: const NavigationListenerWidget(
             child: MainScreen(),
           ),

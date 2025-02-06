@@ -104,7 +104,7 @@ class _SectionTitle extends StatelessWidget {
         child: BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
           builder: (context, state) {
             // ignore: lines_longer_than_80_chars
-            if (state is CoffeeCardListLoaded && state.list.isEmpty) {
+            if (state is CoffeeCardListLoaded && _couldNotRender(state)) {
               return const Offstage();
             }
             return const Text(
@@ -118,5 +118,11 @@ class _SectionTitle extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _couldNotRender(CoffeeCardListLoaded state) {
+    final list = state.list;
+    final noFileExists = !list.any((coffee) => coffee.asFile.existsSync());
+    return list.isEmpty || noFileExists;
   }
 }
