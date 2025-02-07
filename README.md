@@ -53,7 +53,7 @@ $ flutter run --flavor production --target lib/main_production.dart
 
 _\*Vgv Challenge is tested on iOS and Android._
 
-_\*It's reccomended to run flutter run once before using an IDE such as VSCode._
+_\*It's recommended to run flutter run once before using an IDE such as VSCode._
 
 ---
 

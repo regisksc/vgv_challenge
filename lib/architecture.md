@@ -12,9 +12,9 @@
    - **Use Cases (definition)**: Encapsulate business logic such as fetching a random coffee image or saving a favorite locally. Transforms actions into architectural components, similar to *Command Design Pattern*
 
 3. **Data Layer**  
-   - **Use Cases (implementation)**: Implements the usecase definitions and integrates remaining components to make that action, input and output possible.- **Models**: Encapsulate comunication with external applications, such as `Hive` and the `Coffee Api`. Does encoding, decoding and mapping to/from entity.
+   - **Use Cases (implementation)**: Implements the usecase definitions and integrates remaining components to make that action, input and output possible.- **Models**: Encapsulate communication with external applications, such as `Hive` and the `Coffee Api`. Does encoding, decoding and mapping to/from entity.
    - **Data Sources (definition)**: Defines the two main forms of acquiring data for this particular software, and `HttpClient` and a `Storage` manager.  
-   - **Adapters (implementation)**: Implements a generalistic interface to adapt calls to third party dependencies eg: `Dio` and `Hive`. Implements Data Sources  
+   - **Adapters (implementation)**: Implements a general interface to adapt calls to third party dependencies eg: `Dio` and `Hive`. Implements Data Sources  
 
 ---
 
