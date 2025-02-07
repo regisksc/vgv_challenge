@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
-import 'package:vgv_challenge/presentation/l10n/l10n.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
 class AppWidget extends StatelessWidget {

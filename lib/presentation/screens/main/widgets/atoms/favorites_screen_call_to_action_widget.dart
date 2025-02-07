@@ -25,11 +25,11 @@ class FavoritesScreenCallToActionWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         width: 130,
-        child: const Text(
-          'my favorites',
+        child: Text(
+          context.l10n.myFavoritesButtonText,
           textAlign: TextAlign.center,
           maxLines: 1,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             color: facebookColor,
             fontWeight: FontWeight.w700,

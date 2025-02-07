@@ -42,9 +42,10 @@ void main() {
         BlocProvider<MainScreenBloc>.value(value: mainScreenBloc),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         onGenerateRoute: (settings) {
           if (settings.name == AppRoutes.details) {
-            // Return a dummy Details route with a back button.
             return MaterialPageRoute(
               builder: (context) {
                 return Scaffold(
@@ -60,7 +61,6 @@ void main() {
               },
             );
           }
-          // Otherwise, return MainScreen.
           return MaterialPageRoute(builder: (context) => const MainScreen());
         },
       ),
@@ -109,7 +109,7 @@ void main() {
 
       // Act
       final scrollController = find.byType(Scrollable).evaluate().first.widget as Scrollable;
-      scrollController.controller?.jumpTo(20); // Simulate small scroll
+      scrollController.controller?.jumpTo(20);
       await tester.pumpAndSettle();
 
       // Assert
@@ -134,7 +134,7 @@ void main() {
 
       // Act
       final scrollController = find.byType(Scrollable).evaluate().first.widget as Scrollable;
-      scrollController.controller?.jumpTo(60); // Simulate larger scroll
+      scrollController.controller?.jumpTo(60);
       await tester.pumpAndSettle();
 
       final icon = find.byIcon(Icons.keyboard_arrow_down);

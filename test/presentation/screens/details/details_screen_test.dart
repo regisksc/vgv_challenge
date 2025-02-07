@@ -49,6 +49,8 @@ void main() {
     GestureTapCallback? onTap,
   }) {
     return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: MultiBlocProvider(
         providers: [
           BlocProvider.value(value: coffeeInteractionBloc),

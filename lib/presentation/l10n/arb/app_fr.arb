@@ -1,0 +1,19 @@
+{
+    "@@locale": "fr",
+    "lovelyCoffeePicAppBarTitle": "Magnifique photo de café",
+    "alreadyInFavoritesSnackbarMessage": "ce café est déjà dans les favoris",
+    "favoriteCoffeesScreenTitle": "Cafés favoris",
+    "lastSeenText": "Vu pour la dernière fois",
+    "myFavoritesButtonText": "mes favoris",
+    "trendingCoffeeText": "Café tendance",
+    "newCoffeeText": "Nouveau café",
+    "imageNotAvailableText": "Image non disponible",
+    "ratingFailedSnackbarMessage": "Échec de l'évaluation",
+    "commentLabel": "Commentaire",
+    "commentHintText": "Tapez votre commentaire ici",
+    "noFavoritesYetMessage": "Pas encore de favoris. Appuyez sur une carte, ajoutez-la aux favoris et elle apparaîtra ici.",
+    "unexpectedErrorMessage": "Oups... Quelque chose s'est mal passé.",
+    "noCoffeesFoundMessage": "Aucun café trouvé.",
+    "commentSavedSnackbarMessage": "Commentaire enregistré.",
+    "commentingFailedSnackbarMessage": "Échec de la rédaction du commentaire."
+}

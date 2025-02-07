@@ -108,12 +108,9 @@ class _SectionTitle extends StatelessWidget {
             if (state is CoffeeCardListLoaded && _couldNotRender(state)) {
               return const Offstage();
             }
-            return const Text(
-              'Last seen',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            return Text(
+              context.l10n.lastSeenText,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             );
           },
         ),

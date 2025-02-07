@@ -54,7 +54,7 @@ class _CoffeeRatingWidgetState extends State<CoffeeRatingWidget> {
             _dialogOpen = false;
           }
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Rating failed')),
+            SnackBar(content: Text(context.l10n.ratingFailedSnackbarMessage)),
           );
         }
       },

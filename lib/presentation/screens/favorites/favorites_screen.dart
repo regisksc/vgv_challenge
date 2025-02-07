@@ -11,7 +11,7 @@ class FavoritesScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.brown[200],
         appBar: AppBar(
-          title: const Text('Favorite coffees'),
+          title: Text(context.l10n.favoriteCoffeesScreenTitle),
         ),
         body: CustomScrollView(
           slivers: [

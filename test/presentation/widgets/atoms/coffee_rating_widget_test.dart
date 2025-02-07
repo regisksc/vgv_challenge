@@ -124,6 +124,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: BlocProvider<CoffeeInteractionBloc>.value(
             value: coffeeInteractionBloc,
             child: Scaffold(

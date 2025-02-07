@@ -1,7 +1,19 @@
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
-    }
+    "lovelyCoffeePicAppBarTitle": "Lovely coffee pic",
+    "alreadyInFavoritesSnackbarMessage": "this coffee is already in favorites",
+    "favoriteCoffeesScreenTitle": "Favorite coffees",
+    "lastSeenText": "Last seen",
+    "myFavoritesButtonText": "my favorites",
+    "trendingCoffeeText": "Trending coffee",
+    "newCoffeeText": "New coffee",
+    "imageNotAvailableText": "Image not available",
+    "ratingFailedSnackbarMessage": "Rating failed",
+    "commentLabel": "Comment",
+    "commentHintText": "Type your comment here",
+    "noFavoritesYetMessage": "No favorites yet. Tap on a card, star it and it will appear here.",
+    "unexpectedErrorMessage": "Oops... Something went wrong.",
+    "noCoffeesFoundMessage": "No coffees found.",
+    "commentSavedSnackbarMessage": "Comment saved.",
+    "commentingFailedSnackbarMessage": "Commenting failed."
 }

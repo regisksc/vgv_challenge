@@ -42,10 +42,10 @@ class HeaderCoffeeContainerWidget extends StatelessWidget {
             if (file.existsSync()) {
               return Image.file(file, fit: BoxFit.fill);
             } else {
-              return const Center(
+              return Center(
                 child: Text(
-                  'Image not available',
-                  style: TextStyle(color: Colors.white),
+                  context.l10n.imageNotAvailableText,
+                  style: const TextStyle(color: Colors.white),
                 ),
               );
             }

@@ -1,7 +1,19 @@
 {
     "@@locale": "es",
-    "counterAppBarTitle": "Contador",
-    "@counterAppBarTitle": {
-        "description": "Texto mostrado en la AppBar de la página del contador"
-    }
+    "lovelyCoffeePicAppBarTitle": "Foto de café encantadora",
+    "alreadyInFavoritesSnackbarMessage": "este café ya está en favoritos",
+    "favoriteCoffeesScreenTitle": "Cafés favoritos",
+    "lastSeenText": "Visto por última vez",
+    "myFavoritesButtonText": "mis favoritos",
+    "trendingCoffeeText": "Café de tendencia",
+    "newCoffeeText": "Café nuevo",
+    "imageNotAvailableText": "Imagen no disponible",
+    "ratingFailedSnackbarMessage": "Error al calificar",
+    "commentLabel": "Comentario",
+    "commentHintText": "Escribe tu comentario aquí",
+    "noFavoritesYetMessage": "Aún no hay favoritos. Toca una tarjeta, márcala como favorita y aparecerá aquí.",
+    "unexpectedErrorMessage": "Oops... Algo salió mal.",
+    "noCoffeesFoundMessage": "No se encontraron cafés.",
+    "commentSavedSnackbarMessage": "Comentario guardado.",
+    "commentingFailedSnackbarMessage": "Error al comentar."
 }

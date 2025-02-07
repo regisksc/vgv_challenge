@@ -47,7 +47,11 @@ Future<void> pumpRoute(
           value: sl.get<CoffeeInteractionBloc>(),
         ),
       ],
-      child: MaterialApp(home: Builder(builder: pageRoute.builder)),
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(builder: pageRoute.builder),
+      ),
     ),
   );
   await tester.pumpAndSettle(const Duration(seconds: 1));
@@ -154,12 +158,7 @@ void main() {
       final favoritesListMock = sl.get<GetCoffeeList>(instanceName: 'favorites');
       when(() => favoritesListMock.call(any())).thenAnswer((_) async => Result.success([dummyCoffee]));
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          onGenerateRoute: AppRoutes.onGenerateRoute,
-          initialRoute: AppRoutes.favorites,
-        ),
-      );
+      await pumpRoute(tester, settings: const RouteSettings(name: AppRoutes.favorites));
       await tester.pumpAndSettle(const Duration(minutes: 1));
       expect(find.byType(FavoritesScreen), findsOneWidget);
     });

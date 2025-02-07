@@ -35,7 +35,7 @@ class HeaderTitleWidget extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        'Trending coffee',
+        context.l10n.trendingCoffeeText,
         maxLines: 1,
         style: TextStyle(
           color: Colors.brown[900],
@@ -73,7 +73,7 @@ class NewCoffeeButtonWidget extends StatelessWidget {
               height: 25,
               child: FittedBox(
                 child: Text(
-                  'New coffee',
+                  context.l10n.newCoffeeText,
                   style: TextStyle(
                     color: Colors.brown[800],
                     fontWeight: FontWeight.bold,

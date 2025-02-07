@@ -78,12 +78,12 @@ class _ListFailedLoadingContainerWidget extends StatelessWidget {
                 child: Text(
                   () {
                     // ignore: lines_longer_than_80_chars
-                    const noItemsMessage = 'No favorites yet. Tap on a card, star it and it will appear here.';
-                    const unexpectedMessage = 'Oops... Something went wrong.';
+                    final noItemsMessage = context.l10n.noFavoritesYetMessage;
+                    final unexpectedErr = context.l10n.unexpectedErrorMessage;
                     if (failure is ReadingFromEmptyFailure) {
                       return noItemsMessage;
                     }
-                    return unexpectedMessage;
+                    return unexpectedErr;
                   }(),
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -113,11 +113,11 @@ class _ListLoadedContainerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (state.list.isEmpty) {
-      return const SliverToBoxAdapter(
+      return SliverToBoxAdapter(
         child: ColoredBox(
           color: Colors.white70,
           child: Center(
-            child: Text('No coffees found.'),
+            child: Text(context.l10n.noCoffeesFoundMessage),
           ),
         ),
       );

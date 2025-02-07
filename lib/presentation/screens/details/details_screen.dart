@@ -57,7 +57,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
           canPop: storing == false,
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('Lovely coffee pic'),
+              title: Text(context.l10n.lovelyCoffeePicAppBarTitle),
               leading: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: storing
@@ -87,11 +87,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   listener: (context, state) {
                     var message = '';
                     if (state is CommentSubmissionSuccess) {
-                      message = 'Comment saved.';
+                      message = context.l10n.commentSavedSnackbarMessage;
                     } else if (state is CommentSubmissionFailure) {
-                      message = 'Commenting failed.';
+                      message = context.l10n.commentingFailedSnackbarMessage;
                     } else if (state is RatingSubmissionFailure) {
-                      message = 'Rating failed.';
+                      message = '${context.l10n.ratingFailedSnackbarMessage}.';
                     }
                     // ignore: lines_longer_than_80_chars
                     if (state is! CommentSubmissionInProgress &&
@@ -112,9 +112,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     // ignore: lines_longer_than_80_chars, unrelated_type_equality_checks
                     else if (state is FavoritingFailure && state.failure == ItemAlreadySaved) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          key: Key('already'),
-                          content: Text('this coffee is already in favorites'),
+                        SnackBar(
+                          key: const Key('already'),
+                          content: Text(
+                            context.l10n.alreadyInFavoritesSnackbarMessage,
+                          ),
                         ),
                       );
                     }
@@ -133,9 +135,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         onTap: widget.onTap,
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Comment',
-                        style: TextStyle(
+                      Text(
+                        context.l10n.commentLabel,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -148,7 +150,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          hintText: 'Type your comment here',
+                          hintText: context.l10n.commentHintText,
                         ),
                         onChanged: (value) {
                           context.read<CoffeeInteractionBloc>().add(
