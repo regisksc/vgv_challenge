@@ -5,18 +5,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_test/hive_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
-import '../../helpers/mocks.dart';
+import '../../helpers/fakes.dart';
 
-Coffee createDummyCoffee() => Coffee(
-      id: 'dummy_id',
-      imagePath: '/dummy/path/image.jpg',
-      seenAt: DateTime(2025),
-      comment: 'Dummy comment',
-    );
+class GetFavoritesListMock extends Mock implements GetCoffeeList {}
+
+class GetHistoryListMock extends Mock implements GetCoffeeList {}
+
+class FetchCoffeeFromRemoteMock extends Mock implements FetchCoffeeFromRemote {}
+
+class FetchCoffeeFromHistoryMock extends Mock implements FetchCoffeeFromHistory {}
+
+class SaveCoffeeToHistoryMock extends Mock implements SaveCoffeeToHistory {}
+
+class CommentCoffeeMock extends Mock implements CommentCoffee {}
+
+class RateCoffeeMock extends Mock implements RateCoffee {}
+
+class UnfavoriteCoffeeMock extends Mock implements Unfavorite {}
 
 Future<void> pumpRoute(
   WidgetTester tester, {
@@ -24,15 +34,17 @@ Future<void> pumpRoute(
 }) async {
   final route = AppRoutes.onGenerateRoute(settings);
   final pageRoute = route as MaterialPageRoute;
-
   await tester.pumpWidget(
     MultiBlocProvider(
       providers: [
-        BlocProvider<CoffeeCardListBloc>(
-          create: (context) => sl.get<CoffeeCardListBloc>(),
+        BlocProvider<CoffeeCardListBloc>.value(
+          value: sl.get<CoffeeCardListBloc>(instanceName: 'history'),
         ),
-        BlocProvider<MainScreenBloc>(
-          create: (context) => sl.get<MainScreenBloc>(),
+        BlocProvider<MainScreenBloc>.value(
+          value: sl.get<MainScreenBloc>(),
+        ),
+        BlocProvider<CoffeeInteractionBloc>.value(
+          value: sl.get<CoffeeInteractionBloc>(),
         ),
       ],
       child: MaterialApp(home: Builder(builder: pageRoute.builder)),
@@ -47,18 +59,15 @@ void main() {
   late FetchCoffeeFromRemote fetchCoffeeFromRemoteMock;
   late FetchCoffeeFromHistory fetchCoffeeFromHistoryMock;
   late SaveCoffeeToHistory saveCoffeeToHistoryMock;
-  late UpdateCoffee commentCoffeeMock;
-  late UpdateCoffee rateCoffeeMock;
+  late CommentCoffee commentCoffeeMock;
+  late RateCoffee rateCoffeeMock;
+  late Unfavorite unfavoriteCoffeeMock;
 
-  late CoffeeCardListBloc favoritesBloc;
-  late CoffeeCardListBloc historyBloc;
-
-  late Box<String> box;
+  late Coffee fakeCoffee;
 
   setUpAll(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     await setUpTestHive();
-    box = await Hive.openBox<String>('coffee_box');
   });
 
   tearDownAll(() async {
@@ -66,8 +75,8 @@ void main() {
   });
 
   setUp(() async {
+    fakeCoffee = dummyCoffee;
     await sl.reset();
-
     getFavoritesListMock = GetFavoritesListMock();
     getHistoryListMock = GetHistoryListMock();
     fetchCoffeeFromRemoteMock = FetchCoffeeFromRemoteMock();
@@ -75,9 +84,9 @@ void main() {
     saveCoffeeToHistoryMock = SaveCoffeeToHistoryMock();
     commentCoffeeMock = CommentCoffeeMock();
     rateCoffeeMock = RateCoffeeMock();
+    unfavoriteCoffeeMock = UnfavoriteCoffeeMock();
 
-    favoritesBloc = CoffeeCardListBloc(getList: getFavoritesListMock);
-    historyBloc = CoffeeCardListBloc(getList: getHistoryListMock);
+    final box = await Hive.openBox<String>('coffee_box');
 
     sl
       ..registerSingleton<Box<String>>(box)
@@ -85,48 +94,85 @@ void main() {
       ..registerSingleton<GetCoffeeList>(getHistoryListMock, instanceName: 'history')
       ..registerSingleton<FetchCoffeeFromRemote>(fetchCoffeeFromRemoteMock)
       ..registerSingleton<FetchCoffeeFromHistory>(fetchCoffeeFromHistoryMock)
-      ..registerSingleton<SaveCoffeeToHistory>(saveCoffeeToHistoryMock)
-      ..registerSingleton<UpdateCoffee>(commentCoffeeMock, instanceName: 'commentCoffee')
-      ..registerSingleton<UpdateCoffee>(rateCoffeeMock, instanceName: 'rateCoffee')
-      ..registerSingleton(favoritesBloc, instanceName: StorageConstants.favoritesKey)
-      ..registerSingleton(historyBloc, instanceName: 'history')
-      ..registerSingleton(
+      ..registerSingleton<SaveCoffee>(saveCoffeeToHistoryMock, instanceName: 'saveHistory')
+      ..registerSingleton<SaveCoffee>(saveCoffeeToHistoryMock, instanceName: 'saveFavorite')
+      ..registerSingleton<CommentCoffee>(commentCoffeeMock)
+      ..registerSingleton<Unfavorite>(unfavoriteCoffeeMock)
+      ..registerSingleton<RateCoffee>(rateCoffeeMock)
+      ..registerSingleton<CoffeeCardListBloc>(
+        CoffeeCardListBloc(getList: getHistoryListMock),
+        instanceName: 'history',
+      )
+      ..registerSingleton<CoffeeCardListBloc>(
+        CoffeeCardListBloc(getList: getHistoryListMock),
+        instanceName: 'favorites',
+      )
+      ..registerSingleton<CoffeeInteractionBloc>(
+        CoffeeInteractionBloc(commentCoffee: sl<CommentCoffee>(), rateCoffee: sl<RateCoffee>()),
+      )
+      ..registerSingleton<MainScreenBloc>(
         MainScreenBloc(
           apiFetchCoffee: fetchCoffeeFromRemoteMock,
           localFetchCoffee: fetchCoffeeFromHistoryMock,
           saveCoffeeToHistory: saveCoffeeToHistoryMock,
-          historyListBloc: historyBloc,
+          historyListBloc: sl.get<CoffeeCardListBloc>(instanceName: 'history'),
         ),
       );
 
-    tearDown(() async {
-      await tearDownTestHive();
-      await sl.reset();
+    when(() => fetchCoffeeFromRemoteMock()).thenAnswer((_) async => Result.success(fakeCoffee));
+    when(() => fetchCoffeeFromHistoryMock()).thenAnswer((_) async => Result.success(fakeCoffee));
+    when(() => saveCoffeeToHistoryMock(any())).thenAnswer((_) async => const Result.success(null));
+    when(() => getHistoryListMock()).thenAnswer((_) async => Result.success([fakeCoffee]));
+    when(() => commentCoffeeMock(any())).thenAnswer((_) async => const Result.success(null));
+  });
+
+  tearDown(() async {
+    await sl.reset();
+  });
+
+  group('AppRoutes', () {
+    testWidgets('renders DetailsScreen with valid arguments', (tester) async {
+      final historyListBloc = sl.get<CoffeeCardListBloc>(instanceName: 'history');
+      when(() => historyListBloc.getList(any())).thenAnswer((_) async => Result.success([dummyCoffee]));
+      await pumpRoute(
+        tester,
+        settings: RouteSettings(
+          name: AppRoutes.details,
+          arguments: fakeCoffee,
+        ),
+      );
+      expect(find.byType(DetailsScreen), findsOneWidget);
     });
 
-    group('AppRoutes', () {
-      testWidgets('renders DetailsScreen with valid arguments', (tester) async {
-        await pumpRoute(
-          tester,
-          settings: RouteSettings(
-            name: AppRoutes.details,
-            arguments: (
-              coffee: createDummyCoffee(),
-              historyBloc: historyBloc,
-              favoritesBloc: favoritesBloc,
-            ),
-          ),
-        );
-        expect(find.byType(DetailsScreen), findsOneWidget);
-      });
+    testWidgets('renders fallback for invalid details route', (tester) async {
+      await pumpRoute(tester, settings: const RouteSettings(name: AppRoutes.details));
+      expect(find.byType(Scaffold), findsOneWidget);
+      expect(find.byType(DetailsScreen), findsNothing);
+    });
 
-      testWidgets('renders fallback for invalid details route', (tester) async {
-        await pumpRoute(
-          tester,
-          settings: const RouteSettings(name: AppRoutes.details),
-        );
-        expect(find.byType(Scaffold), findsOneWidget);
-      });
+    testWidgets('renders FavoritesScreen for AppRoutes.favorites', (tester) async {
+      final favoritesListMock = sl.get<GetCoffeeList>(instanceName: 'favorites');
+      when(() => favoritesListMock.call(any())).thenAnswer((_) async => Result.success([dummyCoffee]));
+
+      await tester.pumpWidget(
+        const MaterialApp(
+          onGenerateRoute: AppRoutes.onGenerateRoute,
+          initialRoute: AppRoutes.favorites,
+        ),
+      );
+      await tester.pumpAndSettle(const Duration(minutes: 1));
+      expect(find.byType(FavoritesScreen), findsOneWidget);
+    });
+
+    testWidgets('renders fallback for unknown route', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          onGenerateRoute: AppRoutes.onGenerateRoute,
+          initialRoute: '/unknown',
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Route Not Found'), findsOneWidget);
     });
   });
 }
