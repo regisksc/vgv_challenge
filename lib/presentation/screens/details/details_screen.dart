@@ -55,114 +55,119 @@ class _DetailsScreenState extends State<DetailsScreen> {
         final storing = state is CommentIsGettingInput || state is RatingSubmissionInProgress;
         return PopScope(
           canPop: storing == false,
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(context.l10n.lovelyCoffeePicAppBarTitle),
-              leading: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: storing
-                    ? const CircularProgressIndicator.adaptive()
-                    : IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: Icon(
-                          Icons.chevron_left,
-                          color: Colors.brown[900],
+          child: Semantics(
+            label: context.l10n.lovelyCoffeePicAppBarTitle,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  context.l10n.lovelyCoffeePicAppBarTitle,
+                ),
+                leading: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: storing
+                      ? const CircularProgressIndicator.adaptive()
+                      : IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: Icon(
+                            Icons.chevron_left,
+                            color: Colors.brown[900],
+                          ),
                         ),
-                      ),
-              ),
-              actions: [
-                IconButton(
-                  key: const Key('favoriteIcon'),
-                  onPressed: _toggleFavorite,
-                  icon: Icon(
-                    Icons.star,
-                    color: _isFavorite ? Colors.amber : Colors.brown[100],
+                ),
+                actions: [
+                  IconButton(
+                    key: const Key('favoriteIcon'),
+                    onPressed: _toggleFavorite,
+                    icon: Icon(
+                      Icons.star,
+                      color: _isFavorite ? Colors.amber : Colors.brown[100],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            body: MultiBlocListener(
-              listeners: [
-                BlocListener<CoffeeInteractionBloc, CoffeeInteractionState>(
-                  listener: (context, state) {
-                    var message = '';
-                    if (state is CommentSubmissionSuccess) {
-                      message = context.l10n.commentSavedSnackbarMessage;
-                    } else if (state is CommentSubmissionFailure) {
-                      message = context.l10n.commentingFailedSnackbarMessage;
-                    } else if (state is RatingSubmissionFailure) {
-                      message = '${context.l10n.ratingFailedSnackbarMessage}.';
-                    }
-                    // ignore: lines_longer_than_80_chars
-                    if (state is! CommentSubmissionInProgress &&
-                        state is! RatingSubmissionInProgress &&
-                        message.isNotEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(message)),
-                      );
-                    }
-                  },
-                ),
-                BlocListener<FavoritesBloc, FavoritesState>(
-                  listener: (context, state) {
-                    // ignore: lines_longer_than_80_chars
-                    if (state is FavoritingSuccess || state is UnfavoritingSuccess) {
-                      setState(() => _isFavorite = !_isFavorite);
-                    }
-                    // ignore: lines_longer_than_80_chars, unrelated_type_equality_checks
-                    else if (state is FavoritingFailure && state.failure == ItemAlreadySaved) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          key: const Key('already'),
-                          content: Text(
-                            context.l10n.alreadyInFavoritesSnackbarMessage,
+                ],
+              ),
+              body: MultiBlocListener(
+                listeners: [
+                  BlocListener<CoffeeInteractionBloc, CoffeeInteractionState>(
+                    listener: (context, state) {
+                      var message = '';
+                      if (state is CommentSubmissionSuccess) {
+                        message = context.l10n.commentSavedSnackbarMessage;
+                      } else if (state is CommentSubmissionFailure) {
+                        message = context.l10n.commentingFailedSnackbarMessage;
+                      } else if (state is RatingSubmissionFailure) {
+                        message = '${context.l10n.ratingFailedSnackbarMessage}.';
+                      }
+                      // ignore: lines_longer_than_80_chars
+                      if (state is! CommentSubmissionInProgress &&
+                          state is! RatingSubmissionInProgress &&
+                          message.isNotEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(message)),
+                        );
+                      }
+                    },
+                  ),
+                  BlocListener<FavoritesBloc, FavoritesState>(
+                    listener: (context, state) {
+                      // ignore: lines_longer_than_80_chars
+                      if (state is FavoritingSuccess || state is UnfavoritingSuccess) {
+                        setState(() => _isFavorite = !_isFavorite);
+                      }
+                      // ignore: lines_longer_than_80_chars, unrelated_type_equality_checks
+                      else if (state is FavoritingFailure && state.failure == ItemAlreadySaved) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            key: const Key('already'),
+                            content: Text(
+                              context.l10n.alreadyInFavoritesSnackbarMessage,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        CoffeeCard(
+                          coffee: widget.coffee,
+                          shouldShowRating: true,
+                          onTap: widget.onTap,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          context.l10n.commentLabel,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      );
-                    }
-                  },
-                ),
-              ],
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      CoffeeCard(
-                        coffee: widget.coffee,
-                        shouldShowRating: true,
-                        onTap: widget.onTap,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        context.l10n.commentLabel,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _controller,
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _controller,
+                          maxLines: 5,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            hintText: context.l10n.commentHintText,
                           ),
-                          hintText: context.l10n.commentHintText,
+                          onChanged: (value) {
+                            context.read<CoffeeInteractionBloc>().add(
+                                  CommentChanged(
+                                    comment: value,
+                                    coffee: widget.coffee,
+                                  ),
+                                );
+                          },
                         ),
-                        onChanged: (value) {
-                          context.read<CoffeeInteractionBloc>().add(
-                                CommentChanged(
-                                  comment: value,
-                                  coffee: widget.coffee,
-                                ),
-                              );
-                        },
-                      ),
-                      SizedBox(height: size.height * 0.2),
-                    ],
+                        SizedBox(height: size.height * 0.2),
+                      ],
+                    ),
                   ),
                 ),
               ),

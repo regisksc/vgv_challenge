@@ -7,7 +7,7 @@
     "myFavoritesButtonText": "meus favoritos",
     "trendingCoffeeText": "Café em alta",
     "newCoffeeText": "Novo café",
-    "imageNotAvailableText": "Imagem não disponível",
+    "imageNotAvailableText": "Desculpe, sem café no momento",
     "ratingFailedSnackbarMessage": "Falha ao avaliar",
     "commentLabel": "Comentário",
     "commentHintText": "Digite seu comentário aqui",
@@ -15,5 +15,6 @@
     "unexpectedErrorMessage": "Oops... Algo deu errado.",
     "noCoffeesFoundMessage": "Nenhum café encontrado.",
     "commentSavedSnackbarMessage": "Comentário salvo.",
-    "commentingFailedSnackbarMessage": "Falha ao comentar."
+    "commentingFailedSnackbarMessage": "Falha ao comentar.",
+    "fileNotAvailableMessage": "Arquivo não disponível, por favor carregue um novo"
 }

@@ -45,7 +45,8 @@ class HeaderCoffeeContainerWidget extends StatelessWidget {
               return Center(
                 child: Text(
                   context.l10n.imageNotAvailableText,
-                  style: const TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.brown[900]),
                 ),
               );
             }

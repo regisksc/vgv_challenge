@@ -7,7 +7,7 @@
     "myFavoritesButtonText": "my favorites",
     "trendingCoffeeText": "Trending coffee",
     "newCoffeeText": "New coffee",
-    "imageNotAvailableText": "Image not available",
+    "imageNotAvailableText": "Sorry, we can't bring you coffee at this time",
     "ratingFailedSnackbarMessage": "Rating failed",
     "commentLabel": "Comment",
     "commentHintText": "Type your comment here",
@@ -15,5 +15,6 @@
     "unexpectedErrorMessage": "Oops... Something went wrong.",
     "noCoffeesFoundMessage": "No coffees found.",
     "commentSavedSnackbarMessage": "Comment saved.",
-    "commentingFailedSnackbarMessage": "Commenting failed."
+    "commentingFailedSnackbarMessage": "Commenting failed.",
+    "fileNotAvailableMessage": "File not available, please load a new one"
 }

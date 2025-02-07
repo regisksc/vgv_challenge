@@ -15,5 +15,6 @@
     "unexpectedErrorMessage": "Oups... Quelque chose s'est mal passé.",
     "noCoffeesFoundMessage": "Aucun café trouvé.",
     "commentSavedSnackbarMessage": "Commentaire enregistré.",
-    "commentingFailedSnackbarMessage": "Échec de la rédaction du commentaire."
+    "commentingFailedSnackbarMessage": "Échec de la rédaction du commentaire.",
+    "fileNotAvailableMessage": "Fichier non disponible, veuillez en charger un nouveau"
 }
