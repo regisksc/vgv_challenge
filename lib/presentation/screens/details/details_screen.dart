@@ -72,6 +72,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               ),
               actions: [
                 IconButton(
+                  key: const Key('favoriteIcon'),
                   onPressed: _toggleFavorite,
                   icon: Icon(
                     Icons.star,
@@ -112,6 +113,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     else if (state is FavoritingFailure && state.failure == ItemAlreadySaved) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
+                          key: Key('already'),
                           content: Text('this coffee is already in favorites'),
                         ),
                       );

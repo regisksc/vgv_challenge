@@ -20,6 +20,7 @@ class CoffeeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     const height = 400.0;
     return GestureDetector(
+      key: const Key('coffeeCard'),
       onTap: onTap,
       child: Card(
         elevation: 8,
