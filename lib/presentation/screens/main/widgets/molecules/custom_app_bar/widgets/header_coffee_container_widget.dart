@@ -21,6 +21,7 @@ class HeaderCoffeeContainerWidget extends StatelessWidget {
         builder: (context, state) {
           if (state is MainScreenLoading) {
             return Shimmer.fromColors(
+              key: const ValueKey('shimmer'),
               baseColor: Colors.brown[300]!,
               highlightColor: Colors.brown[100]!,
               period: const Duration(milliseconds: 500),
@@ -40,7 +41,11 @@ class HeaderCoffeeContainerWidget extends StatelessWidget {
           } else if (state is MainScreenLoaded) {
             final file = state.coffee.asFile;
             if (file.existsSync()) {
-              return Image.file(file, fit: BoxFit.fill);
+              return Image.file(
+                file,
+                key: const ValueKey('headerPhoto'),
+                fit: BoxFit.fill,
+              );
             } else {
               return Center(
                 child: Text(

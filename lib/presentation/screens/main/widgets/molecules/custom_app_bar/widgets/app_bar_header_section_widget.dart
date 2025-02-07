@@ -19,7 +19,10 @@ class AppBarHeaderSectionWidget extends StatelessWidget {
       children: [
         Expanded(child: HeaderTitleWidget(animationValue: animationValue)),
         const SizedBox(width: 12),
-        NewCoffeeButtonWidget(onTapButton: onTapButton),
+        NewCoffeeButtonWidget(
+          onTapButton: onTapButton,
+          key: const ValueKey('newCoffeeButton'),
+        ),
       ],
     );
   }

@@ -4,12 +4,6 @@ import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/domain/domain.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
-typedef DetailsRouteParams = ({
-  Coffee coffee,
-  CoffeeCardListBloc favoritesBloc,
-  CoffeeCardListBloc historyBloc,
-});
-
 class AppRoutes {
   static const String details = '/details';
   static const String favorites = '/favorites';

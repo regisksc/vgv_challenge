@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vgv_challenge/data/data.dart';
 import 'package:vgv_challenge/presentation/presentation.dart';
 
 class MainScreen extends StatefulWidget {
@@ -49,6 +50,7 @@ class _MainScreenState extends State<MainScreen> {
                   CustomAppBarWidget(scrollController: _scrollController),
                   const _SectionTitle(),
                   CoffeeCardListWidget(
+                    key: const ValueKey(StorageConstants.historyKey),
                     onReturning: () {
                       final bloc = context.read<CoffeeCardListBloc>();
                       debugPrint(bloc.toString());

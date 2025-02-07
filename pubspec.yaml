@@ -29,6 +29,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_test: ^1.0.1
+  integration_test:
+    sdk: flutter
   mocktail: ^1.0.4
   path_provider_platform_interface: ^2.1.2
   very_good_analysis: ^7.0.0

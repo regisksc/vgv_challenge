@@ -32,13 +32,8 @@ class CoffeeCardListWidget extends StatelessWidget {
               : _ListFailedLoadingContainerWidget(ReadingFromEmptyFailure());
         } else if (state is CoffeeCardListFailedLoading) {
           return _ListFailedLoadingContainerWidget(state.failure);
-        } else {
-          return Container(
-            height: 500,
-            width: 500,
-            color: Colors.red,
-          );
         }
+        return const Offstage();
       },
     );
   }
@@ -52,50 +47,56 @@ class _ListFailedLoadingContainerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final appBarHeight = AppBar().preferredSize.height;
-    return SliverToBoxAdapter(
-      child: SizedBox(
-        height: size.height - appBarHeight,
-        width: size.width,
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.brown[900]!.withValues(alpha: 0.6),
-                      Colors.brown[50]!.withValues(alpha: 0.9),
-                    ],
+
+    return BlocBuilder<CoffeeCardListBloc, CoffeeCardListState>(
+      builder: (context, state) {
+        return SliverToBoxAdapter(
+          key: const Key('noItems'),
+          child: SizedBox(
+            height: size.height - appBarHeight,
+            width: size.width,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.brown[900]!.withValues(alpha: 0.6),
+                          Colors.brown[50]!.withValues(alpha: 0.9),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width * .2),
-                child: Text(
-                  () {
-                    // ignore: lines_longer_than_80_chars
-                    final noItemsMessage = context.l10n.noFavoritesYetMessage;
-                    final unexpectedErr = context.l10n.unexpectedErrorMessage;
-                    if (failure is ReadingFromEmptyFailure) {
-                      return noItemsMessage;
-                    }
-                    return unexpectedErr;
-                  }(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.brown[500],
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: size.width * .2),
+                    child: Text(
+                      () {
+                        // ignore: lines_longer_than_80_chars
+                        final noItemsMessage = context.l10n.noFavoritesYetMessage;
+                        final unexpectedErr = context.l10n.unexpectedErrorMessage;
+                        if (failure is ReadingFromEmptyFailure) {
+                          return noItemsMessage;
+                        }
+                        return unexpectedErr;
+                      }(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.brown[500],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

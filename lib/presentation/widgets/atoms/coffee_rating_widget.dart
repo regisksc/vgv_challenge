@@ -63,6 +63,7 @@ class _CoffeeRatingWidgetState extends State<CoffeeRatingWidget> {
         children: List.generate(5, (index) {
           final isFilled = index < _displayedRatingIndex;
           return GestureDetector(
+            key: ValueKey('ratingStar $index'),
             onTap: () => _handleTap(index),
             child: Stack(
               alignment: Alignment.center,

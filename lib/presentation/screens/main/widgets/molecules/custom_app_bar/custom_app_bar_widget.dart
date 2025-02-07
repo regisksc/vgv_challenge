@@ -65,6 +65,7 @@ class CustomAppBarWidget extends StatelessWidget {
               animationValue: animationValue,
               leftChild: const CoffeeBookLogoWidget(),
               rightChild: IconButton.outlined(
+                key: const ValueKey('newCoffeeCircularButton'),
                 color: Colors.brown[700],
                 onPressed: () => _onNewCoffee(context),
                 icon: const Icon(

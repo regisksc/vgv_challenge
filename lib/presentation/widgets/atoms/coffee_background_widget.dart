@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vgv_challenge/domain/domain.dart';
+import 'package:vgv_challenge/presentation/l10n/l10n.dart';
 
 class CoffeeBackgroundWidget extends StatelessWidget {
   const CoffeeBackgroundWidget({
@@ -14,17 +15,18 @@ class CoffeeBackgroundWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVisible = coffee.asFile.existsSync();
-    return Visibility(
-      visible: isVisible,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Image.file(
-          coffee.asFile,
-          fit: BoxFit.cover,
-          width: MediaQuery.of(context).size.width * 0.9,
-          height: height,
-        ),
-      ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: isVisible
+          ? Image.file(
+              coffee.asFile,
+              fit: BoxFit.cover,
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: height,
+            )
+          : Center(
+              child: Text(context.l10n.imageNotAvailableText),
+            ),
     );
   }
 }

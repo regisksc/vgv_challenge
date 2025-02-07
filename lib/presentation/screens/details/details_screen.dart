@@ -76,7 +76,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 ),
                 actions: [
                   IconButton(
-                    key: const Key('favoriteIcon'),
+                    key: const ValueKey('favoriteIcon'),
                     onPressed: _toggleFavorite,
                     icon: Icon(
                       Icons.star,
