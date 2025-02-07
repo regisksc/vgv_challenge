@@ -38,7 +38,7 @@ runs:
       uses: VeryGoodOpenSource/very_good_coverage@v2
       with:
         path: coverage-reports/merged.lcov.info
-        min_coverage: 60
+        min_coverage: 80
         exclude: "**/*.*.dart"
 
     - name: 📊 Report Tests
