@@ -44,4 +44,4 @@
 
 ---
 
-> For deeper insight into the core domain objects and logic, see [domain.md](./domain.md).
+> For deeper insight into the core domain objects and logic, see [domain.md](./domain/domain.md).
