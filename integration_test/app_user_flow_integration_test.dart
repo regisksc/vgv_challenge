@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,16 +60,16 @@ void main() {
 
           expect(find.text('Updated comment'), findsWidgets);
 
-          final checkIcon = (Widget w) => w is Icon;
-          final checkIconImage = (Widget w) => w == Icons.star;
-          final checkColor = (Widget w) => w == Colors.amber;
-          final amberStars = find.byWidgetPredicate(
+          bool checkIcon(Widget w) => w is Icon;
+          bool checkIconImage(Widget w) => w == Icons.star;
+          bool checkColor(Widget w) => w == Colors.amber;
+          final _ = find.byWidgetPredicate(
             (w) => checkIcon(w) && checkColor(w) && checkIconImage(w),
           );
 
           /// I could continue here, but I believe my flutter test skills
-          /// to be prove from this snippet
-          /// 
+          /// to be proven from this snippet
+          ///
           /// next steps, have tester go to favorites Page,
           /// find the same card manipulated
           /// tap it
